@@ -1,2 +1,2 @@
 # openconnect-sso
-Wrapper script for openconnect supporting Azure AD (SAMLv2) authentication
+Wrapper script for OpenConnect supporting Azure AD (SAMLv2) authentication
