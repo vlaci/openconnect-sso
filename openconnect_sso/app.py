@@ -82,7 +82,7 @@ async def _run(args):
         logger.warn("Exiting after login, as requested")
         return 0
 
-    return await run_openconnect(session_token, selected_profile)
+    return await run_openconnect(session_token, selected_profile, args.openconnect_args)
 
 
 async def select_profile(profile_list):
@@ -107,7 +107,7 @@ def authenticate_to(host, credentials):
     return Authenticator(host, credentials=credentials).authenticate()
 
 
-async def run_openconnect(auth_info, host):
+async def run_openconnect(auth_info, host, args):
     proc = await asyncio.create_subprocess_exec(
         "sudo",
         "openconnect",
@@ -116,6 +116,7 @@ async def run_openconnect(auth_info, host):
         "--cookie-on-stdin",
         "--servercert",
         auth_info.server_cert_hash,
+        *args,
         host.vpn_url,
         stdin=asyncio.subprocess.PIPE,
         stdout=None,
