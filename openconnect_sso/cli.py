@@ -62,6 +62,7 @@ def create_argparser():
     parser.add_argument(
         "openconnect_args",
         help="Arguments passed to openconnect",
+        action=StoreOpenConnectArgs,
         nargs=argparse.REMAINDER,
     )
 
@@ -70,6 +71,13 @@ def create_argparser():
         "-u", "--user", help="Authenticate as the given user", default=None
     )
     return parser
+
+
+class StoreOpenConnectArgs(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if "--" in values:
+            values.remove("--")
+        setattr(namespace, self.dest, values)
 
 
 class LogLevel(enum.IntEnum):
