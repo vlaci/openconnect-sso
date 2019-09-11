@@ -115,13 +115,18 @@ def authenticate_to(host, credentials):
 
 
 async def run_openconnect(auth_info, host, args):
-    proc = await asyncio.create_subprocess_exec(
+    command_line = [
         "sudo",
         "openconnect",
         "--cookie-on-stdin",
         "--servercert",
         auth_info.server_cert_hash,
         *args,
+    ]
+
+    logger.debug("Starting OpenConnect", command_line=command_line)
+    proc = await asyncio.create_subprocess_exec(
+        *command_line,
         host.vpn_url,
         stdin=asyncio.subprocess.PIPE,
         stdout=None,
