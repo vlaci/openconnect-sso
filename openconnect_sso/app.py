@@ -118,8 +118,6 @@ async def run_openconnect(auth_info, host, args):
     proc = await asyncio.create_subprocess_exec(
         "sudo",
         "openconnect",
-        "--csd-user",
-        "nobody",
         "--cookie-on-stdin",
         "--servercert",
         auth_info.server_cert_hash,
