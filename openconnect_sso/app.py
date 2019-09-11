@@ -63,7 +63,7 @@ async def _run(args):
 
     if cfg.default_profile and not args.use_profile_selector:
         selected_profile = cfg.default_profile
-    else:
+    elif args.use_profile_selector:
         profiles = get_profiles(Path(args.profile_path))
         if not profiles:
             logger.error("No profile found")
@@ -73,7 +73,14 @@ async def _run(args):
         if not selected_profile:
             logger.error("No profile selected")
             return 18
-        cfg.default_profile = selected_profile
+    elif args.server:
+        selected_profile = config.HostProfile(args.server, args.usergroup)
+    else:
+        raise ValueError(
+            "Cannot determine server address. Invalid arguments specified."
+        )
+
+    cfg.default_profile = selected_profile
 
     config.save(cfg)
 

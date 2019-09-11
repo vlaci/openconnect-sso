@@ -1,5 +1,5 @@
 from pathlib import Path
-from urllib.parse import urlunparse
+from urllib.parse import urlparse, urlunparse
 
 import attr
 import keyring
@@ -59,13 +59,19 @@ class ConfigNode:
 
 @attr.s
 class HostProfile(ConfigNode):
-    name = attr.ib(converter=str)
     address = attr.ib(converter=str)
     user_group = attr.ib(converter=str)
+    name = attr.ib(converter=str, default="UNNAMED")
 
     @property
     def vpn_url(self):
-        return urlunparse(("https", self.address, self.user_group, "", "", ""))
+        parts = urlparse(self.address)
+        group = self.user_group or parts.path
+        if parts.path == self.address and not self.user_group:
+            group = ""
+        return urlunparse(
+            (parts.scheme or "https", parts.netloc or self.address, group, "", "", "")
+        )
 
 
 @attr.s
