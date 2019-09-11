@@ -102,8 +102,8 @@ def main():
         )
 
     if not args.profile_path and not args.server and not config.load().default_profile:
-        if os.path.exists("/opt/cisco/anyconnect/profiles"):
-            args.profile_path = "/opt/cisco/anyconnect/profiles"
+        if os.path.exists("/opt/cisco/anyconnect/profile"):
+            args.profile_path = "/opt/cisco/anyconnect/profile"
         else:
             parser.error(
                 "No Anyconnect profile can be found. One of --profile or --server arguments required."
