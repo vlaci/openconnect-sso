@@ -63,7 +63,7 @@ async def _run(args):
 
     if cfg.default_profile and not args.use_profile_selector:
         selected_profile = cfg.default_profile
-    elif args.use_profile_selector:
+    elif args.use_profile_selector or args.profile_path:
         profiles = get_profiles(Path(args.profile_path))
         if not profiles:
             logger.error("No profile found")
