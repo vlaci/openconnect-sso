@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "openconnect-sso"
-version = "0.3.1"
-description = "Wrapper script for OpenConnect supporting Azure AD (SAMLv2) authentication"
+version = "0.3.2"
+description = "Wrapper script for OpenConnect supporting Azure AD (SAMLv2) authentication to Cisco SSL-VPNs"
 authors = ["László Vaskó <laszlo.vasko@outlook.com>"]
 readme = "README.md"
 
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: X11 Applications :: Qt",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: POSIX :: Linux",
@@ -20,7 +20,7 @@ openconnect-sso = "openconnect_sso.cli:main"
 python = "^3.6"
 PyQt5 = "^5.12"
 PyQtWebEngine = "^5.12"
-attrs = "^18.2"
+attrs = ">=18.2, <20.0"
 colorama = "^0.4"
 lxml = "^4.3"
 keyring = "^18.0"
@@ -33,6 +33,7 @@ toml = "^0.10"
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
 black = "=19.3b0"
+reno = "^2.11"
 
 [build-system]
 requires = ["poetry>=0.12"]
