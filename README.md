@@ -13,7 +13,7 @@ If you want to save credentials and get them automatically
 injected in the web browser:
 ```bash
 $ openconnect-sso --server vpn.server.com/group --user user@domain.com
-Password (user@domain.com): 
+Password (user@domain.com):
 [info     ] Authenticating to VPN endpoint ...
 ```
 
