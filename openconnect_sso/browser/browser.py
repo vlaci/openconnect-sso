@@ -30,13 +30,13 @@ class Browser:
             stdout=asyncio.subprocess.PIPE
         )
 
-        self.updater = asyncio.create_task(self._update_status())
+        self.updater = asyncio.ensure_future(self._update_status())
         self.running = True
 
         def stop(_task):
             self.running = False
 
-        asyncio.create_task(self.browser_proc.wait()).add_done_callback(stop)
+        asyncio.ensure_future(self.browser_proc.wait()).add_done_callback(stop)
 
     async def _update_status(self):
         assert self.running
