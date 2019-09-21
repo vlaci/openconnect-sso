@@ -280,6 +280,28 @@ setuptools = "*"
 six = ">=1.10.0"
 
 [[package]]
+category = "dev"
+description = "Pytest support for asyncio."
+name = "pytest-asyncio"
+optional = false
+python-versions = ">= 3.5"
+version = "0.10.0"
+
+[package.dependencies]
+pytest = ">=3.0.6"
+
+[[package]]
+category = "dev"
+description = "pytest-httpserver is a httpserver for pytest"
+name = "pytest-httpserver"
+optional = false
+python-versions = ">=3.4"
+version = "0.3.4"
+
+[package.dependencies]
+werkzeug = "*"
+
+[[package]]
 category = "main"
 description = ""
 marker = "sys_platform == \"win32\""
@@ -390,6 +412,14 @@ version = "0.1.7"
 
 [[package]]
 category = "dev"
+description = "The comprehensive WSGI web application library."
+name = "werkzeug"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "0.16.0"
+
+[[package]]
+category = "dev"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 name = "zipp"
 optional = false
@@ -400,7 +430,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "32fdd8ab0bb59eba7efe27a50dc5d41154a573ea5e2348f05708dbf51361fbf0"
+content-hash = "a24a126250bb55ffd1ab973b9ac763d89e4eaeefb250c60f1f87f8d1f231174f"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -432,6 +462,8 @@ pyqt5 = ["4d51a245d64fbd85c77ba3dee12b8fe018a440ccb49fd1cb0e4587c360655d3c", "70
 pyqt5-sip = ["0a6c272ad2b6556a804a66bf808240ae0db88ab26f5ce37231da8c1d3e6910a6", "2a056b47bcfcdd7cd5722063d4ccffe2876f0f4c545c9e980d21573b193c6d11", "31a7a2c1d77969c14aca7c4928991ae8dba6ce468f7a48300f12b769ea62b5a5", "65dac636d2f2e3cce804e99ecd318d832daee5a45599105e7721a3e96012386c", "7dd4d0bae586ab929e0e4f0d07008cb3b4449af48f7a4e73db4d66b806316778", "889f2d71e7e94e370be726048a4632226846715c8b3cb0525572f857d408f7cf", "8d4e039a2a81d81482a09abf856608bb06723979d78c4308f33cb0cc39d186ad", "a5bea998292a644525a34e1ec104090e4618f7b92f35d92310db39f8051f9ad0", "abf80e8b3dc01e6d5b55e40531cecd59b835659bbf83ad866b36d8d539bbb0a5", "b9d0b9ba90d74731ff3a540772f3dc97a343f0a99c1afb4680c1378fce4cef56", "c386e756fde44758d12f96d066d93f0ff8eedff1133cda25b192480b8f18b675", "c6ae3a2f5f2bceeb81c97427c14329f2da1d54ccfedccbd6923d95183cd68637", "d9cd23b181213522dc2d5042697cd3d614ce69ec742b0a8a3bc023fefa6f2339", "da51cc22b8b32c5e6024c902393cd8fd0208fc1aec1ce5478357481cd9561bfb", "ea3cbf1f591063608fee2de015fef1135bb72f0114922d639c2602ce10090002", "f128fe3f1fec3cb497bf403b45efe1db3b0b27509efcf4cb6d8e1e915e9227ee"]
 pyqtwebengine = ["93128e703c6dcbbcd71821f3aaa1271ba09146ccb57107a105c8f4bd2df457ed", "cbf3dff59c2ca9c76100ef8a3cd955cda2e86420b28d2f4cc7dfa1d48f8ba14a", "dd4952f6671e10fcb572274e964f324778e75b6da5586c30f4b99a2b44857e95", "eeb0e18be50e35f7dc1601283ab51800b4ee9b4cfb28d1ae14bf1709cd170368"]
 pytest = ["3f193df1cfe1d1609d4c583838bea3d532b18d6160fd3f55c9447fdca30848ec", "e246cf173c01169b9617fc07264b7b1316e78d7a650055235d6d897bc80d9660"]
+pytest-asyncio = ["9fac5100fd716cbecf6ef89233e8590a4ad61d729d1732e0a96b84182df1daaf", "d734718e25cfc32d2bf78d346e99d33724deeba774cc4afdf491530c6184b63b"]
+pytest-httpserver = ["7feab352b2626d1a0ecdebffcac5e5875979f08ad7e621b2289980ce8f6ebc5b", "c7269aed8b4f2d24e41eaa2034dd9ab7ae02b0cb6e71afeae93127832920ec8d"]
 pywin32-ctypes = ["24ffc3b341d457d48e8922352130cf2644024a4ff09762a2261fd34c36ee5942", "9dc2d991b3479cc2df15930958b674a48a227d5361d413827a4cfd0b5876fc98"]
 pyxdg = ["1948ff8e2db02156c0cccd2529b43c0cff56ebaa71f5f021bbd755bc1419190e", "fe2928d3f532ed32b39c32a482b54136fe766d19936afc96c8f00645f9da1a06"]
 pyyaml = ["0113bc0ec2ad727182326b61326afa3d1d8280ae1122493553fd6f4397f33df9", "01adf0b6c6f61bd11af6e10ca52b7d4057dd0be0343eb9283c878cf3af56aee4", "5124373960b0b3f4aa7df1707e63e9f109b5263eca5976c66e08b1c552d4eaf8", "5ca4f10adbddae56d824b2c09668e91219bb178a1eee1faa56af6f99f11bf696", "7907be34ffa3c5a32b60b95f4d95ea25361c951383a894fec31be7252b2b6f34", "7ec9b2a4ed5cad025c2278a1e6a19c011c80a3caaac804fd2d329e9cc2c287c9", "87ae4c829bb25b9fe99cf71fbb2140c448f534e24c998cc60f39ae4f94396a73", "9de9919becc9cc2ff03637872a440195ac4241c80536632fffeb6a1e25a74299", "a5a85b10e450c66b49f98846937e8cfca1db3127a9d5d1e31ca45c3d0bef4c5b", "b0997827b4f6a7c286c01c5f60384d218dca4ed7d9efa945c3e1aa623d5709ae", "b631ef96d3222e62861443cc89d6563ba3eeb816eeb96b2629345ab795e53681", "bf47c0607522fdbca6c9e817a6e81b08491de50f3766a7a0e6a5be7905961b41", "f81025eddd0327c7d4cfe9b62cf33190e1e736cc6e97502b3ec425f574b3e7a8"]
@@ -443,4 +475,5 @@ structlog = ["5feae03167620824d3ae3e8915ea8589fc28d1ad6f3edf3cc90ed7c7cb33fab5",
 toml = ["229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c", "235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e", "f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"]
 urllib3 = ["b246607a25ac80bedac05c6f282e3cdaf3afb65420fd024ac94435cabe6e18d1", "dbe59173209418ae49d485b87d1681aefa36252ee85884c31346debd19463232"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
+werkzeug = ["7280924747b5733b246fe23972186c6b348f9ae29724135a6dfc1e53cea433e7", "e5f4a1f98b52b18a93da705a7458e55afb26f32bff83ff5d19189f92462d65c4"]
 zipp = ["3718b1cbcd963c7d4c5511a8240812904164b7f381b647143a89d3b98f9bcd8e", "f06903e9f1f43b12d371004b4ac7b06ab39a44adc747266928ae6debfa7b3335"]

@@ -33,6 +33,8 @@ toml = "^0.10"
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
 black = "=19.3b0"
+pytest-asyncio = "^0.10.0"
+pytest-httpserver = "^0.3.4"
 reno = "^2.11"
 
 [build-system]

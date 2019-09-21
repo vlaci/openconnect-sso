@@ -29,9 +29,9 @@ class Browser:
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE
         )
+        self.running = True
 
         self.updater = asyncio.ensure_future(self._update_status())
-        self.running = True
 
         def stop(_task):
             self.running = False
@@ -39,7 +39,6 @@ class Browser:
         asyncio.ensure_future(self.browser_proc.wait()).add_done_callback(stop)
 
     async def _update_status(self):
-        assert self.running
         while self.running:
             logger.debug("Waiting for message from browser process")
 
