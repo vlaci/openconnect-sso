@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import argparse
 import enum
 import logging
 import os
+import sys
 
 import openconnect_sso
 from openconnect_sso import app, config
@@ -118,3 +121,7 @@ def main():
             )
 
     return app.run(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
