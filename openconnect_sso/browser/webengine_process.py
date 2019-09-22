@@ -6,7 +6,7 @@ import sys
 import pkg_resources
 import structlog
 
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, QTimer
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineScript
 from PyQt5.QtWidgets import QApplication
 
@@ -28,6 +28,15 @@ def run_browser_process():
     cfg = config.load()
 
     app = QApplication(sys.argv)
+
+    # In order to make Python able to handle signals
+    force_python_execution = QTimer()
+    force_python_execution.start(200)
+
+    def ignore():
+        pass
+
+    force_python_execution.timeout.connect(ignore)
     web = WebBrowser(cfg.auto_fill_rules)
 
     line = sys.stdin.buffer.readline()
@@ -128,6 +137,12 @@ def get_selectors(rules, credentials):
     return "\n".join(statements)
 
 
+def on_sigterm(signum, frame):
+    logger.info("SIGNAL handler")
+    QApplication.quit()
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, on_sigterm)
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(run_browser_process())

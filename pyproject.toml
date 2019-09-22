@@ -31,9 +31,11 @@ structlog = "^19.1"
 toml = "^0.10"
 
 [tool.poetry.dev-dependencies]
+coverage_enable_subprocess = "^1.0"
 pytest = "^3.0"
 black = "=19.3b0"
 pytest-asyncio = "^0.10.0"
+pytest-cov = "^2.7"
 pytest-httpserver = "^0.3.4"
 reno = "^2.11"
 
