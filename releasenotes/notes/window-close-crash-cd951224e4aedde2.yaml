@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    A potential crash upon closing the browser window is fixed. The issue was
+    caused by the mismatch between Python's and Qt's memory management model.

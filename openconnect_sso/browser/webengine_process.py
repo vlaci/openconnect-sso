@@ -15,10 +15,13 @@ from openconnect_sso.app import configure_logger
 from openconnect_sso.browser import rpc_types as rpc
 from openconnect_sso.cli import create_argparser
 
+app = None
 logger = structlog.get_logger("webengine")
 
 
 def run_browser_process():
+    # To work around funky GC conflicts with C++ code by ensuring QApplication terminates last
+    global app
     args = create_argparser().parse_known_args()[0]
     configure_logger(logging.getLogger(), args.log_level)
 
