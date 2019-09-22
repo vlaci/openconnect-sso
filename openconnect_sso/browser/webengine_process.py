@@ -130,4 +130,4 @@ def get_selectors(rules, credentials):
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    run_browser_process()
+    sys.exit(run_browser_process())
