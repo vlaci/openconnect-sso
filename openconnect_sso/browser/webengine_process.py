@@ -118,7 +118,11 @@ def get_selectors(rules, credentials):
     statements = []
     for i, rule in enumerate(rules):
         selector = json.dumps(rule.selector)
-        if rule.fill:
+        if rule.action == "stop":
+            statements.append(
+                f"""var elem = document.querySelector({selector}); if (elem) {{ return; }}"""
+            )
+        elif rule.fill:
             value = json.dumps(getattr(credentials, rule.fill, None))
             if value:
                 statements.append(
