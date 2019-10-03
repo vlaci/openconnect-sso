@@ -6,7 +6,7 @@ import sys
 import pkg_resources
 import structlog
 
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, QTimer
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineScript
 from PyQt5.QtWidgets import QApplication
 
@@ -15,16 +15,28 @@ from openconnect_sso.app import configure_logger
 from openconnect_sso.browser import rpc_types as rpc
 from openconnect_sso.cli import create_argparser
 
+app = None
 logger = structlog.get_logger("webengine")
 
 
 def run_browser_process():
+    # To work around funky GC conflicts with C++ code by ensuring QApplication terminates last
+    global app
     args = create_argparser().parse_known_args()[0]
     configure_logger(logging.getLogger(), args.log_level)
 
     cfg = config.load()
 
     app = QApplication(sys.argv)
+
+    # In order to make Python able to handle signals
+    force_python_execution = QTimer()
+    force_python_execution.start(200)
+
+    def ignore():
+        pass
+
+    force_python_execution.timeout.connect(ignore)
     web = WebBrowser(cfg.auto_fill_rules)
 
     line = sys.stdin.buffer.readline()
@@ -106,7 +118,11 @@ def get_selectors(rules, credentials):
     statements = []
     for i, rule in enumerate(rules):
         selector = json.dumps(rule.selector)
-        if rule.fill:
+        if rule.action == "stop":
+            statements.append(
+                f"""var elem = document.querySelector({selector}); if (elem) {{ return; }}"""
+            )
+        elif rule.fill:
             value = json.dumps(getattr(credentials, rule.fill, None))
             if value:
                 statements.append(
@@ -125,6 +141,12 @@ def get_selectors(rules, credentials):
     return "\n".join(statements)
 
 
+def on_sigterm(signum, frame):
+    logger.info("SIGNAL handler")
+    QApplication.quit()
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, on_sigterm)
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    run_browser_process()
+    sys.exit(run_browser_process())

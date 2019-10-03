@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import argparse
 import enum
 import logging
 import os
+import sys
 
 import openconnect_sso
 from openconnect_sso import app, config
@@ -117,4 +120,13 @@ def main():
                 "No Anyconnect profile can be found. One of --profile or --server arguments required."
             )
 
+    if args.use_profile_selector and not args.profile_path:
+        parser.error(
+            "No Anyconnect profile can be found. --profile argument is required."
+        )
+
     return app.run(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
