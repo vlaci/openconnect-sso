@@ -120,6 +120,11 @@ def main():
                 "No Anyconnect profile can be found. One of --profile or --server arguments required."
             )
 
+    if args.use_profile_selector and not args.profile_path:
+        parser.error(
+            "No Anyconnect profile can be found. --profile argument is required."
+        )
+
     return app.run(args)
 
 
