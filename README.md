@@ -29,4 +29,4 @@ $ openconnect-sso
 ```
 
 Configuration is saved in `$XDG_CONFIG_HOME/openconnect-sso/config.toml`. On typical
-Linux installations it is located under `$HOME/.configopenconnect-sso/config.toml`
+Linux installations it is located under `$HOME/.config/openconnect-sso/config.toml`
