@@ -27,7 +27,7 @@ def run_browser_process():
 
     cfg = config.load()
 
-    app = QApplication(sys.argv)
+    app = QApplication(["hehe", "-platform", "minimal"])
 
     # In order to make Python able to handle signals
     force_python_execution = QTimer()
@@ -88,6 +88,9 @@ function autoFill() {{
 }}
 autoFill();
 """
+                )
+                logger.debug(
+                    "Injecting script for automatic login", script=script.sourceCode()
                 )
                 self.page().scripts().insert(script)
 
