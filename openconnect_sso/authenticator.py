@@ -61,6 +61,12 @@ class AuthenticationState:
 
 class StartAuthentication(AuthenticationState):
     async def trigger(self):
+        logger.debug("Auth started", url=self.authenticator.host.vpn_url)
+        response = requests.get(self.authenticator.host.vpn_url)
+        response.raise_for_status()
+        self.authenticator.host.address = response.url
+        logger.debug("Auth target url", url=self.authenticator.host.vpn_url)
+
         request = _create_auth_init_request(
             self.authenticator.host, self.authenticator.host.vpn_url
         )
