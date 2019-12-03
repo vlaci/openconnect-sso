@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Support redirection when e.g. VPN endpoint is behind a load-balancer
