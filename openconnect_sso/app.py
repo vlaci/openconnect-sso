@@ -61,7 +61,7 @@ async def _run(args):
         credentials.password = getpass.getpass(prompt=f"Password ({args.user}): ")
         cfg.credentials = credentials
 
-    if cfg.default_profile and not args.use_profile_selector:
+    if cfg.default_profile and not (args.use_profile_selector or args.server):
         selected_profile = cfg.default_profile
     elif args.use_profile_selector or args.profile_path:
         profiles = get_profiles(Path(args.profile_path))
