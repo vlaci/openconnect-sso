@@ -30,7 +30,7 @@ def _get_profiles_from_one_file(path):
             )
         )
 
-    logger.debug("Anyconnect profiles parsed", path=path.name, profiles=profiles)
+    logger.debug("AnyConnect profiles parsed", path=path.name, profiles=profiles)
     return profiles
 
 

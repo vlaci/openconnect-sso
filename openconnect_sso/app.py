@@ -1,19 +1,24 @@
 import asyncio
 import getpass
+import json
 import logging
 import os
 import signal
 from pathlib import Path
 
+import attr
 import structlog
 from prompt_toolkit import HTML
 from prompt_toolkit.eventloop import use_asyncio_event_loop
 from prompt_toolkit.shortcuts import radiolist_dialog
 
 from openconnect_sso import config
-from openconnect_sso.authenticator import Authenticator
+from openconnect_sso.authenticator import Authenticator, AuthResponseError
+from openconnect_sso.browser import Terminated
 from openconnect_sso.config import Credentials
 from openconnect_sso.profile import get_profiles
+
+from requests.exceptions import HTTPError
 
 logger = structlog.get_logger()
 
@@ -27,6 +32,14 @@ def run(args):
         return asyncio.get_event_loop().run_until_complete(_run(args))
     except KeyboardInterrupt:
         logger.warn("CTRL-C pressed, exiting")
+    except Terminated:
+        logger.warn("Browser window terminated, exiting")
+    except AuthResponseError as exc:
+        logger.error(
+            f'Required attributes not found in response ("{exc}", does this endpoint do SSO?), exiting'
+        )
+    except HTTPError as exc:
+        logger.error(f"Request error: {exc}")
 
 
 def configure_logger(logger, level):
@@ -84,19 +97,24 @@ async def _run(args):
 
     config.save(cfg)
 
-    session_token = await authenticate_to(selected_profile, credentials)
-    if args.login_only:
+    auth_response = await authenticate_to(selected_profile, credentials)
+    if args.headless:
         logger.warn("Exiting after login, as requested")
+        details = {
+            "vpn_url": selected_profile.vpn_url,
+            "auth_response": attr.asdict(auth_response),
+        }
+        print(json.dumps(details, indent=4))
         return 0
 
-    return await run_openconnect(session_token, selected_profile, args.openconnect_args)
+    return await run_openconnect(auth_response, selected_profile, args.openconnect_args)
 
 
 async def select_profile(profile_list):
     selection = await radiolist_dialog(
-        title="Select Anyconnect profile",
+        title="Select AnyConnect profile",
         text=HTML(
-            "The following Anyconnect profiles are detected.\n"
+            "The following AnyConnect profiles are detected.\n"
             "The selection will be <b>saved</b> and not asked again unless the <pre>--profile-selector</pre> command line option is used"
         ),
         values=[(p, p.name) for i, p in enumerate(profile_list)],
