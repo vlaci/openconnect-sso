@@ -10,10 +10,11 @@ logger = structlog.get_logger()
 
 
 class Authenticator:
-    def __init__(self, host, credentials=None):
-        self.session = create_http_session()
+    def __init__(self, host, credentials=None, version_string=None):
         self.host = host
         self.credentials = credentials
+        self.version_string = version_string or "unknown"
+        self.session = create_http_session(self.version_string)
 
         self.auth_state = StartAuthentication(authenticator=self)
 
@@ -26,11 +27,11 @@ class Authenticator:
         return self.auth_state.auth_completed_response
 
 
-def create_http_session():
+def create_http_session(version_string):
     session = requests.Session()
     session.headers.update(
         {
-            "User-Agent": "AnyConnect Linux_64 4.7.00136",
+            "User-Agent": f"AnyConnect Linux_64 {version_string}",
             "Accept": "*/*",
             "Accept-Encoding": "identity",
             "X-Transcend-Version": "1",
@@ -68,7 +69,9 @@ class StartAuthentication(AuthenticationState):
         logger.debug("Auth target url", url=self.authenticator.host.vpn_url)
 
         request = _create_auth_init_request(
-            self.authenticator.host, self.authenticator.host.vpn_url
+            self.authenticator.host,
+            self.authenticator.host.vpn_url,
+            self.authenticator.version_string
         )
         response = self.authenticator.session.post(
             self.authenticator.host.vpn_url, request
@@ -91,7 +94,7 @@ class StartAuthentication(AuthenticationState):
 E = objectify.ElementMaker(annotate=False)
 
 
-def _create_auth_init_request(host, url):
+def _create_auth_init_request(host, url, version_string):
     ConfigAuth = getattr(E, "config-auth")
     Version = E.version
     DeviceId = getattr(E, "device-id")
@@ -102,7 +105,7 @@ def _create_auth_init_request(host, url):
 
     root = ConfigAuth(
         {"client": "vpn", "type": "init", "aggregate-auth-version": "2"},
-        Version({"who": "vpn"}, "4.7.00136"),
+        Version({"who": "vpn"}, version_string),
         DeviceId("linux-64"),
         GroupSelect(host.name),
         GroupAccess(url),
@@ -125,15 +128,20 @@ def parse_response(resp):
 
 def parse_auth_request_response(xml):
     assert xml.auth.get("id") == "main"
-    resp = AuthRequestResponse(
-        auth_id=xml.auth.get("id"),
-        auth_title=xml.auth.title,
-        auth_message=xml.auth.message,
-        opaque=xml.opaque,
-        login_url=xml.auth["sso-v2-login"],
-        login_final_url=xml.auth["sso-v2-login-final"],
-        token_cookie_name=xml.auth["sso-v2-token-cookie-name"],
-    )
+
+    try:
+        resp = AuthRequestResponse(
+            auth_id=xml.auth.get("id"),
+            auth_title=xml.auth.title,
+            auth_message=xml.auth.message,
+            opaque=xml.opaque,
+            login_url=xml.auth["sso-v2-login"],
+            login_final_url=xml.auth["sso-v2-login-final"],
+            token_cookie_name=xml.auth["sso-v2-token-cookie-name"],
+        )
+    except AttributeError as exc:
+        raise AuthResponseError(exc)
+
     logger.info(
         "Response received",
         id=resp.auth_id,
@@ -173,6 +181,9 @@ class AuthCompleteResponse:
     session_token = attr.ib(converter=str)
     server_cert_hash = attr.ib(converter=str)
 
+    def asdict(self):
+        return self.__dict__
+
 
 class ExternalAuthentication(AuthenticationState):
     async def trigger(self):
@@ -185,7 +196,10 @@ class ExternalAuthentication(AuthenticationState):
 class CompleteAuthentication(AuthenticationState):
     async def trigger(self):
         request = _create_auth_finish_request(
-            self.authenticator.host, self.auth_request_response, self.sso_token
+            self.authenticator.host,
+            self.auth_request_response,
+            self.sso_token,
+            self.authenticator.version_string
         )
         response = self.authenticator.session.post(
             self.authenticator.host.vpn_url, request
@@ -205,7 +219,7 @@ class CompleteAuthentication(AuthenticationState):
             return StartAuthentication()
 
 
-def _create_auth_finish_request(host, auth_info, sso_token):
+def _create_auth_finish_request(host, auth_info, sso_token, version_string):
     ConfigAuth = getattr(E, "config-auth")
     Version = E.version
     DeviceId = getattr(E, "device-id")
@@ -216,7 +230,7 @@ def _create_auth_finish_request(host, auth_info, sso_token):
 
     root = ConfigAuth(
         {"client": "vpn", "type": "auth-reply", "aggregate-auth-version": "2"},
-        Version({"who": "vpn"}, "4.7.00136"),
+        Version({"who": "vpn"}, version_string),
         DeviceId("linux-64"),
         SessionToken(),
         SessionId(),
@@ -229,4 +243,8 @@ def _create_auth_finish_request(host, auth_info, sso_token):
 
 
 class AuthenticationCompleted(AuthenticationState):
+    pass
+
+
+class AuthResponseError(Exception):
     pass

@@ -1,16 +1,20 @@
 # openconnect-sso
+
 Wrapper script for OpenConnect supporting Azure AD (SAMLv2) authentication
 to Cisco SSL-VPNs
 
 ## TL; DR
+
 ```bash
 $ pip install openconnect-sso
 $ openconnect-sso --server vpn.server.com/group
 ```
 
 ## Configuration
+
 If you want to save credentials and get them automatically
 injected in the web browser:
+
 ```bash
 $ openconnect-sso --server vpn.server.com/group --user user@domain.com
 Password (user@domain.com):
