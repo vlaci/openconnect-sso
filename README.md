@@ -5,6 +5,8 @@ to Cisco SSL-VPNs
 
 ## TL; DR
 
+### Using pip
+
 This will install `openconect-sso` along with its dependencies including Qt:
 ```bash
 $ pip install "openconnect-sso[full]"
@@ -15,6 +17,37 @@ If have Qt 5.x installed, you can skip the installation of bundled Qt version:
 
 ``` bash
 $ pip install openconnect-sso
+```
+
+### Using nix:
+
+The easiest method to try is by installing directly:
+
+``` bash
+$ nix-env -f https://github.com/vlaci/openconnect-sso/archive/master.tar.gz -i
+```
+
+An overlay is also available to use in nix expressions:
+
+``` nix
+let
+  openconnectOverlay = import "${builtins.fetchTarball https://github.com/vlaci/openconnect-sso/archive/master.tar.gz}/overlay.nix";
+  pkgs = import <nixpkgs> { overlays = [ openconnectOverlay ]; };
+in
+  #  pkgs.openconnect-sso is available in this context
+```
+
+
+... or to use in `configuration.nix`:
+
+``` nix
+{ config, ... }:
+
+{
+  nixpkgs.overlays = [
+    (import "${builtins.fetchTarball https://github.com/vlaci/openconnect-sso/archive/master.tar.gz}/overlay.nix")
+  ];
+}
 ```
 
 ## Configuration
@@ -41,3 +74,37 @@ $ openconnect-sso
 
 Configuration is saved in `$XDG_CONFIG_HOME/openconnect-sso/config.toml`. On typical
 Linux installations it is located under `$HOME/.config/openconnect-sso/config.toml`
+
+## Development
+
+`openconnect-sso` is developed using [Nix](https://nixos.org/nix/). Refer to the [Quick Start section of
+the Nix manual](https://nixos.org/nix/manual/#chap-quick-start) to see how to
+get it installed on your machine.
+
+To get dropped into a development environment, just type `nix-shell`:
+
+``` bash
+$ nix-shell
+Sourcing python-catch-conflicts-hook.sh
+Sourcing python-remove-bin-bytecode-hook.sh
+Sourcing pip-build-hook
+Using pipBuildPhase
+Sourcing pip-install-hook
+Using pipInstallPhase
+Sourcing python-imports-check-hook.sh
+Using pythonImportsCheckPhase
+
+[nix-shell]$ 
+```
+
+
+To try an installed version of the package, issue `nix-build`:
+
+``` bash
+$ nix-build
+
+$ result/bin/openconnect-sso --help
+```
+
+Alternatively you may just [get Poetry](https://python-poetry.org/docs/) and
+start developing using the `scripts/devenv` helper script.
