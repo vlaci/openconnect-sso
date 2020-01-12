@@ -5,9 +5,16 @@ to Cisco SSL-VPNs
 
 ## TL; DR
 
+This will install `openconect-sso` along with its dependencies including Qt:
 ```bash
-$ pip install openconnect-sso
+$ pip install "openconnect-sso[full]"
 $ openconnect-sso --server vpn.server.com/group
+```
+
+If have Qt 5.x installed, you can skip the installation of bundled Qt version:
+
+``` bash
+$ pip install openconnect-sso
 ```
 
 ## Configuration
