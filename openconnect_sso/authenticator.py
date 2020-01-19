@@ -21,8 +21,15 @@ class Authenticator:
         response = self._start_authentication()
         if not isinstance(response, AuthRequestResponse):
             logger.error(
-                "Error occurred during authentication. Invalid response type in state",
-                state=self,
+                "Error occurred during authentication. Invalid response type in current state",
+                response=response,
+            )
+            raise AuthenticationError(response)
+
+        if response.auth_error:
+            logger.error(
+                "Error occurred during authentication. Response contains error",
+                error=response.auth_error,
                 response=response,
             )
             raise AuthenticationError(response)
@@ -34,7 +41,7 @@ class Authenticator:
         response = self._complete_authentication(auth_request_response, sso_token)
         if not isinstance(response, AuthCompleteResponse):
             logger.error(
-                "Error occurred during authentication. Invalid response type in state",
+                "Error occurred during authentication. Invalid response type in current state",
                 state=self,
                 response=response,
             )
@@ -139,6 +146,7 @@ def parse_auth_request_response(xml):
         auth_id=xml.auth.get("id"),
         auth_title=xml.auth.title,
         auth_message=xml.auth.message,
+        auth_error=getattr(xml.auth, "error", ""),
         opaque=xml.opaque,
         login_url=xml.auth["sso-v2-login"],
         login_final_url=xml.auth["sso-v2-login-final"],
@@ -158,6 +166,7 @@ class AuthRequestResponse:
     auth_id = attr.ib(converter=str)
     auth_title = attr.ib(converter=str)
     auth_message = attr.ib(converter=str)
+    auth_error = attr.ib(converter=str)
     login_url = attr.ib(converter=str)
     login_final_url = attr.ib(convert=str)
     token_cookie_name = attr.ib(convert=str)
