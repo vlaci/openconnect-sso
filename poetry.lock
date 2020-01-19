@@ -100,6 +100,17 @@ version = "5.0.3"
 toml = ["toml"]
 
 [[package]]
+category = "dev"
+description = "enable python coverage for subprocesses"
+name = "coverage-enable-subprocess"
+optional = false
+python-versions = "*"
+version = "1.0"
+
+[package.dependencies]
+coverage = "*"
+
+[[package]]
 category = "main"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
 marker = "sys_platform == \"linux\" and python_version >= \"3.5\""
@@ -529,7 +540,7 @@ testing = ["pathlib2", "contextlib2", "unittest2"]
 full = ["PyQt5", "PyQtWebEngine"]
 
 [metadata]
-content-hash = "851eea9ad82b8ed1fef38257b6712734e506deb4722350835967f8023121f14f"
+content-hash = "593b20744eb85f56ed4bb338a1d718450c5bfee0704a7003b8a295c9dbc76d44"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -632,6 +643,10 @@ coverage = [
     {file = "coverage-5.0.3-cp39-cp39m-win32.whl", hash = "sha256:b63dd43f455ba878e5e9f80ba4f748c0a2156dde6e0e6e690310e24d6e8caf40"},
     {file = "coverage-5.0.3-cp39-cp39m-win_amd64.whl", hash = "sha256:da93027835164b8223e8e5af2cf902a4c80ed93cb0909417234f4a9df3bcd9af"},
     {file = "coverage-5.0.3.tar.gz", hash = "sha256:77afca04240c40450c331fa796b3eab6f1e15c5ecf8bf2b8bee9706cd5452fef"},
+]
+coverage-enable-subprocess = [
+    {file = "coverage_enable_subprocess-1.0-py2.py3-none-any.whl", hash = "sha256:27982522339ec77662965e0d859da5662162962c874d54d2250426506818cbdc"},
+    {file = "coverage_enable_subprocess-1.0.tar.gz", hash = "sha256:fdbd3dc9532007cd87ef84f38e16024c5b0ccb4ab2d1755225a7edf937acc011"},
 ]
 cryptography = [
     {file = "cryptography-2.8-cp27-cp27m-macosx_10_6_intel.whl", hash = "sha256:fb81c17e0ebe3358486cd8cc3ad78adbae58af12fc2bf2bc0bb84e8090fa5ce8"},
