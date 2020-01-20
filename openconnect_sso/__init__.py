@@ -5,5 +5,7 @@ except ModuleNotFoundError:
     import importlib_metadata
 
 
-__version__ = importlib_metadata.version('openconnect-sso')
-__description__ = "Wrapper script for OpenConnect supporting Azure AD (SAMLv2) authentication to Cisco SSL-VPNs"
+_metadata = importlib_metadata.metadata("openconnect-sso")
+
+__version__ = _metadata["Version"]
+__description__ = _metadata["Summary"]
