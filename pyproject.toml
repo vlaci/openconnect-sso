@@ -2,8 +2,11 @@
 name = "openconnect-sso"
 version = "0.3.9"
 description = "Wrapper script for OpenConnect supporting Azure AD (SAMLv2) authentication to Cisco SSL-VPNs"
+license = "GPL-3.0-only"
 authors = ["László Vaskó <laszlo.vasko@outlook.com>"]
 readme = "README.md"
+homepage = "https://github.com/vlaci/openconnect-sso"
+repository = "https://github.com/vlaci/openconnect-sso"
 
 classifiers = [
     "Development Status :: 4 - Beta",
