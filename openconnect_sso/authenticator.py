@@ -15,15 +15,68 @@ class Authenticator:
         self.host = host
         self.credentials = credentials
 
-        self.auth_state = StartAuthentication(authenticator=self)
-
     async def authenticate(self):
-        assert isinstance(self.auth_state, StartAuthentication)
-        logger.debug("Entering state", state=self.auth_state)
-        while not isinstance(self.auth_state, AuthenticationCompleted):
-            self.auth_state = await self.auth_state.trigger()
-            logger.debug("Entering state", state=self.auth_state)
-        return self.auth_state.auth_completed_response
+        self._detect_authentication_target_url()
+
+        response = self._start_authentication()
+        if not isinstance(response, AuthRequestResponse):
+            logger.error(
+                "Could not start authentication. Invalid response type in current state",
+                response=response,
+            )
+            raise AuthenticationError(response)
+
+        if response.auth_error:
+            logger.error(
+                "Could not start authentication. Response contains error",
+                error=response.auth_error,
+                response=response,
+            )
+            raise AuthenticationError(response)
+
+        auth_request_response = response
+
+        sso_token = await self._authenticate_in_browser(auth_request_response)
+
+        response = self._complete_authentication(auth_request_response, sso_token)
+        if not isinstance(response, AuthCompleteResponse):
+            logger.error(
+                "Could not finish authentication. Invalid response type in current state",
+                response=response,
+            )
+            raise AuthenticationError(response)
+
+        return response
+
+    def _detect_authentication_target_url(self):
+        # Follow possible redirects in a GET request
+        # Authentication will occcur using a POST request on the final URL
+        response = requests.get(self.host.vpn_url)
+        response.raise_for_status()
+        self.host.address = response.url
+        logger.debug("Auth target url", url=self.host.vpn_url)
+
+    def _start_authentication(self):
+        request = _create_auth_init_request(self.host, self.host.vpn_url)
+        response = self.session.post(self.host.vpn_url, request)
+        logger.debug("Auth init response received", content=response.content)
+        return parse_response(response)
+
+    async def _authenticate_in_browser(self, auth_request_response):
+        return await authenticate_in_browser(auth_request_response, self.credentials)
+
+    def _complete_authentication(self, auth_request_response, sso_token):
+        request = _create_auth_finish_request(
+            self.host, auth_request_response, sso_token
+        )
+        response = self.session.post(self.host.vpn_url, request)
+        logger.debug("Auth finish response received", content=response.content)
+        return parse_response(response)
+
+
+class AuthenticationError(Exception):
+    def __init__(self, response):
+        super().__init__((response,))
 
 
 def create_http_session():
@@ -41,51 +94,6 @@ def create_http_session():
         }
     )
     return session
-
-
-class AuthenticationState:
-    def __init__(self, *, authenticator=None, previous=None):
-        self.authenticator = authenticator
-        self.auth_request_response = None
-        self.auth_completed_response = None
-        self.sso_token = None
-        if previous:
-            self.authenticator = previous.authenticator
-            self.auth_request_response = previous.auth_request_response
-            self.auth_completed_response = previous.auth_completed_response
-            self.sso_token = previous.sso_token
-
-    def __repr__(self):
-        return f"<STATE {self.__class__.__name__}>"
-
-
-class StartAuthentication(AuthenticationState):
-    async def trigger(self):
-        logger.debug("Auth started", url=self.authenticator.host.vpn_url)
-        response = requests.get(self.authenticator.host.vpn_url)
-        response.raise_for_status()
-        self.authenticator.host.address = response.url
-        logger.debug("Auth target url", url=self.authenticator.host.vpn_url)
-
-        request = _create_auth_init_request(
-            self.authenticator.host, self.authenticator.host.vpn_url
-        )
-        response = self.authenticator.session.post(
-            self.authenticator.host.vpn_url, request
-        )
-        logger.debug("Auth init response received", content=response.content)
-        response = parse_response(response)
-
-        if isinstance(response, AuthRequestResponse):
-            self.auth_request_response = response
-            return ExternalAuthentication(previous=self)
-        else:
-            logger.error(
-                "Error occurred during authentication. Invalid response type in state",
-                state=self,
-                response=response,
-            )
-            return self
 
 
 E = objectify.ElementMaker(annotate=False)
@@ -129,6 +137,7 @@ def parse_auth_request_response(xml):
         auth_id=xml.auth.get("id"),
         auth_title=xml.auth.title,
         auth_message=xml.auth.message,
+        auth_error=getattr(xml.auth, "error", ""),
         opaque=xml.opaque,
         login_url=xml.auth["sso-v2-login"],
         login_final_url=xml.auth["sso-v2-login-final"],
@@ -148,6 +157,7 @@ class AuthRequestResponse:
     auth_id = attr.ib(converter=str)
     auth_title = attr.ib(converter=str)
     auth_message = attr.ib(converter=str)
+    auth_error = attr.ib(converter=str)
     login_url = attr.ib(converter=str)
     login_final_url = attr.ib(convert=str)
     token_cookie_name = attr.ib(convert=str)
@@ -174,37 +184,6 @@ class AuthCompleteResponse:
     server_cert_hash = attr.ib(converter=str)
 
 
-class ExternalAuthentication(AuthenticationState):
-    async def trigger(self):
-        self.sso_token = await authenticate_in_browser(
-            self.auth_request_response, self.authenticator.credentials
-        )
-        return CompleteAuthentication(previous=self)
-
-
-class CompleteAuthentication(AuthenticationState):
-    async def trigger(self):
-        request = _create_auth_finish_request(
-            self.authenticator.host, self.auth_request_response, self.sso_token
-        )
-        response = self.authenticator.session.post(
-            self.authenticator.host.vpn_url, request
-        )
-        logger.debug("Auth finish response received", content=response.content)
-        response = parse_response(response)
-
-        if isinstance(response, AuthCompleteResponse):
-            self.auth_completed_response = response
-            return AuthenticationCompleted(previous=self)
-        else:
-            logger.error(
-                "Error occurred during authentication. Invalid response type in state",
-                state=self,
-                response=response,
-            )
-            return StartAuthentication()
-
-
 def _create_auth_finish_request(host, auth_info, sso_token):
     ConfigAuth = getattr(E, "config-auth")
     Version = E.version
@@ -226,7 +205,3 @@ def _create_auth_finish_request(host, auth_info, sso_token):
     return etree.tostring(
         root, pretty_print=True, xml_declaration=True, encoding="UTF-8"
     )
-
-
-class AuthenticationCompleted(AuthenticationState):
-    pass
