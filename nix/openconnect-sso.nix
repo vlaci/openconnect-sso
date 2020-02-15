@@ -19,9 +19,6 @@ poetry2nix.mkPoetryApplication {
   makeWrapperArgs = [
     "\${qtWrapperArgs[@]}"
   ];
-  postFixup = ''
-    patchPythonScript $out/lib/python*/site-packages/openconnect_sso/browser/webengine_process.py
-  '';
 
   overrides = [
     poetry2nix.defaultPoetryOverrides
