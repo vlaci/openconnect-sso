@@ -136,7 +136,7 @@ def to_str(qval):
 
 def get_selectors(rules, credentials):
     statements = []
-    for i, rule in enumerate(rules):
+    for rule in rules:
         selector = json.dumps(rule.selector)
         if rule.action == "stop":
             statements.append(
