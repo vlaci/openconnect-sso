@@ -48,9 +48,12 @@ def create_argparser():
     )
 
     parser.add_argument(
-        "--headless",
-        help="Complete authentication and output auth response as JSON, do not initiate a connection",
-        action="store_true",
+        "--authenticate",
+        help="Authenticate only, and output the information needed to make the connection. Output formatting choices: {%(choices)s}",
+        choices=["shell", "json"],
+        const="shell",
+        metavar="OUTPUT-FORMAT",
+        nargs="?",
         default=False,
     )
 

@@ -2,11 +2,10 @@ import asyncio
 import getpass
 import json
 import logging
-import os
+import shlex
 import signal
 from pathlib import Path
 
-import attr
 import structlog
 from prompt_toolkit import HTML
 from prompt_toolkit.eventloop import use_asyncio_event_loop
@@ -98,13 +97,19 @@ async def _run(args):
     config.save(cfg)
 
     auth_response = await authenticate_to(selected_profile, credentials)
-    if args.headless:
+    if args.authenticate:
         logger.warn("Exiting after login, as requested")
         details = {
-            "vpn_url": selected_profile.vpn_url,
-            "auth_response": attr.asdict(auth_response),
+            "host": selected_profile.vpn_url,
+            "cookie": auth_response.session_token,
+            "fingerprint": auth_response.server_cert_hash,
         }
-        print(json.dumps(details, indent=4))
+        if args.authenticate == "json":
+            print(json.dumps(details, indent=4))
+        elif args.authenticate == "shell":
+            print(
+                "\n".join(f"{k.upper()}={shlex.quote(v)}" for k, v in details.items())
+            )
         return 0
 
     return await run_openconnect(auth_response, selected_profile, args.openconnect_args)
