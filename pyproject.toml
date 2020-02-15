@@ -48,6 +48,9 @@ pytest-cov = "^2.7"
 pytest-httpserver = "^0.3.4"
 reno = "^2.11"
 
+[tool.black]
+target-version = ['py36', 'py37', 'py38']
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

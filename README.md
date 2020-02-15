@@ -128,7 +128,7 @@ Sourcing python-imports-check-hook.sh
 Using pythonImportsCheckPhase
 Run 'make help' for available commands
 
-[nix-shell]$ 
+[nix-shell]$
 ```
 
 To try an installed version of the package, issue `nix-build`:
