@@ -69,6 +69,8 @@ test:  ## Run tests
 
 ###############################################################################
 ## Release
+VERSION = $(shell .venv/bin/python -c 'import openconnect_sso; print(f"v{openconnect_sso.__version__}")')
+
 .PHONY: changelog
 changelog:  ## Shows the project's changelog
 	@{  trap "rm -f .reno_err" EXIT; \
@@ -81,5 +83,41 @@ changelog: FORMAT ?= gfm  ## Output format for changelog
 changelog: ONLY_CURRENT ?=  ## Log only current (and unreleased) versions changes
 changelog: OUTPUT_FILE ?=  ## Write changelog to file instead of displaying
 
+.INTERMEDIATE: CHANGELOG.md
 CHANGELOG.md: $(wildcard releasenotes/**/*)
 	$(MAKE) changelog OUTPUT_FILE=CHANGELOG.md
+
+.PHONY: dist
+dist: CHANGELOG.md  ## Build packages from whatever state the repository is
+	poetry build
+	cp CHANGELOG.md dist/CHANGELOG-$(VERSION).md
+
+.PHONY: tag-repo
+tag-repo: CURRENT_TAG = $(shell git describe --tags)
+tag-repo:
+	@echo -e "$(BOLD) -> Tagging repository as $(VERSION)...$(RESET)"
+	if [ "$(VERSION)" != "$(CURRENT_TAG)" ]; then \
+		git tag $(VERSION) || { echo -e "$(BOLD)$(RED) => Existing tag $(VERSION) is not at HEAD!$(RESET)" && false; }; \
+	fi
+
+release: before-release before-clean clean dev check tag-repo dist  ## Build release version in a clean environment
+	@echo -e "$(BOLD)$(GREEN) => Finished building release version $(VERSION).$(RESET)"
+
+before-clean:
+	@echo -en "$(YELLOW)"
+	@git clean --dry-run -Xd
+	@echo -e "$(RESET)$(BOLD) -> CTRL-C in 10s to cancel...$(RESET)"
+	@sleep 10
+
+before-release:
+	@echo -e "$(BOLD) -> Building release version...$(RESET)"
+	@if [ -n "$$(git status --short)" ]; then \
+		git status; \
+		echo -e "$(BOLD)$(RED) => Repository is dirty!$(RESET)"; \
+		false; \
+	fi
+	@if [ $$(git rev-parse HEAD) != $$(git rev-parse origin/master) ]; then \
+		git --no-pager log --oneline --graph origin/master...; \
+		echo -e "$(BOLD)$(RED) => HEAD must point to origin/master!$(RESET)"; \
+		false; \
+	fi
