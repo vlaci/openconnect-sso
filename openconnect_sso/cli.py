@@ -58,12 +58,7 @@ def create_argparser():
     )
 
     parser.add_argument(
-        "-V",
-        "--version",
-        dest="show_version",
-        help="Show the application version",
-        action="store_true",
-        default=False,
+        "-V", "--version", action="version", version=f"%(prog)s {__version__}"
     )
 
     parser.add_argument(
@@ -122,10 +117,6 @@ class LogLevel(enum.IntEnum):
 def main():
     parser = create_argparser()
     args = parser.parse_args()
-
-    if args.show_version:
-        print("Version:", __version__)
-        return
 
     if (args.profile_path or args.use_profile_selector) and (
         args.server or args.usergroup
