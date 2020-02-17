@@ -1,5 +1,7 @@
+import asyncio
 import json
 import logging
+import multiprocessing
 import signal
 import sys
 
@@ -19,44 +21,68 @@ app = None
 logger = structlog.get_logger("webengine")
 
 
-def run_browser_process():
-    # To work around funky GC conflicts with C++ code by ensuring QApplication terminates last
-    global app
-    args = create_argparser().parse_known_args()[0]
-    configure_logger(logging.getLogger(), args.log_level)
+class Process(multiprocessing.Process):
+    def __init__(self):
+        super().__init__()
 
-    cfg = config.load()
+        self._commands = multiprocessing.Queue()
+        self._states = multiprocessing.Queue()
 
-    app = QApplication(sys.argv)
+    def authenticate_at(self, url, credentials):
+        self._commands.put(rpc.StartupInfo(url, credentials))
 
-    # In order to make Python able to handle signals
-    force_python_execution = QTimer()
-    force_python_execution.start(200)
+    async def get_state_async(self):
+        while self.is_alive():
+            try:
+                return self._states.get_nowait()
+            except multiprocessing.queues.Empty:
+                await asyncio.sleep(0.01)
+        if not self.is_alive():
+            raise EOFError()
 
-    def ignore():
-        pass
+    def run(self):
+        # To work around funky GC conflicts with C++ code by ensuring QApplication terminates last
+        global app
+        args = create_argparser().parse_known_args()[0]
+        configure_logger(logging.getLogger(), args.log_level)
 
-    force_python_execution.timeout.connect(ignore)
-    web = WebBrowser(cfg.auto_fill_rules)
+        cfg = config.load()
 
-    line = sys.stdin.buffer.readline()
-    startup_info = rpc.deserialize(line)
-    logger.info("Browser started", startup_info=startup_info)
+        app = QApplication(sys.argv)
 
-    logger.info("Loading page", url=startup_info.url)
+        # In order to make Python able to handle signals
+        force_python_execution = QTimer()
+        force_python_execution.start(200)
 
-    web.authenticate_at(QUrl(startup_info.url), startup_info.credentials)
+        def ignore():
+            pass
 
-    web.show()
-    rc = app.exec_()
+        force_python_execution.timeout.connect(ignore)
+        web = WebBrowser(cfg.auto_fill_rules, self._states.put)
 
-    logger.info("Exiting browser")
-    return rc
+        startup_info = self._commands.get()
+        logger.info("Browser started", startup_info=startup_info)
+
+        logger.info("Loading page", url=startup_info.url)
+
+        web.authenticate_at(QUrl(startup_info.url), startup_info.credentials)
+
+        web.show()
+        rc = app.exec_()
+
+        logger.info("Exiting browser")
+        return rc
+
+    async def wait(self):
+        while self.is_alive():
+            await asyncio.sleep(0.01)
+        self.join()
 
 
 class WebBrowser(QWebEngineView):
-    def __init__(self, auto_fill_rules):
+    def __init__(self, auto_fill_rules, on_update):
         super().__init__()
+        self._on_update = on_update
         self._auto_fill_rules = auto_fill_rules
         cookie_store = self.page().profile().cookieStore()
         cookie_store.cookieAdded.connect(self._on_cookie_added)
@@ -95,19 +121,13 @@ autoFill();
 
     def _on_cookie_added(self, cookie):
         logger.debug("Cookie set", name=to_str(cookie.name()))
-        sys.stdout.buffer.write(
-            rpc.SetCookie(to_str(cookie.name()), to_str(cookie.value())).serialize()
-        )
-        sys.stdout.buffer.write(b"\n")
-        sys.stdout.flush()
+        self._on_update(rpc.SetCookie(to_str(cookie.name()), to_str(cookie.value())))
 
     def _on_load_finished(self, success):
         url = self.page().url().toString()
         logger.debug("Page loaded", url=url)
 
-        sys.stdout.buffer.write(rpc.Url(url).serialize())
-        sys.stdout.buffer.write(b"\n")
-        sys.stdout.flush()
+        self._on_update(rpc.Url(url))
 
 
 def to_str(qval):
@@ -149,4 +169,4 @@ def on_sigterm(signum, frame):
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, on_sigterm)
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    sys.exit(run_browser_process())
+    sys.exit(Process().run())

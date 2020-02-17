@@ -1,1 +1,1 @@
-from .browser import Browser
+from .browser import Browser, Terminated

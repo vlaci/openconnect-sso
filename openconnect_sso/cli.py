@@ -7,7 +7,7 @@ import os
 import sys
 
 import openconnect_sso
-from openconnect_sso import app, config
+from openconnect_sso import app, config, __version__
 
 
 def create_argparser():
@@ -39,6 +39,7 @@ def create_argparser():
         "vpn.server.com, vpn.server.com/usergroup, "
         "https://vpn.server.com, https.vpn.server.com.usergroup",
     )
+
     server_settings.add_argument(
         "-g",
         "--usergroup",
@@ -47,10 +48,17 @@ def create_argparser():
     )
 
     parser.add_argument(
-        "--login-only",
-        help="Complete authentication but do not acquire a session token or initiate a connection",
-        action="store_true",
+        "--authenticate",
+        help="Authenticate only, and output the information needed to make the connection. Output formatting choices: {%(choices)s}",
+        choices=["shell", "json"],
+        const="shell",
+        metavar="OUTPUT-FORMAT",
+        nargs="?",
         default=False,
+    )
+
+    parser.add_argument(
+        "-V", "--version", action="version", version=f"%(prog)s {__version__}"
     )
 
     parser.add_argument(
@@ -94,7 +102,12 @@ class LogLevel(enum.IntEnum):
 
     @classmethod
     def parse(cls, name):
-        return cls.__members__[name.upper()]
+        try:
+            level = cls.__members__[name.upper()]
+        except KeyError:
+            print(f"unknown loglevel '{name}', setting to INFO", file=sys.stderr)
+            level = logging.INFO
+        return level
 
     @classmethod
     def choices(cls):
@@ -117,12 +130,12 @@ def main():
             args.profile_path = "/opt/cisco/anyconnect/profile"
         else:
             parser.error(
-                "No Anyconnect profile can be found. One of --profile or --server arguments required."
+                "No AnyConnect profile can be found. One of --profile or --server arguments required."
             )
 
     if args.use_profile_selector and not args.profile_path:
         parser.error(
-            "No Anyconnect profile can be found. --profile argument is required."
+            "No AnyConnect profile can be found. --profile argument is required."
         )
 
     return app.run(args)

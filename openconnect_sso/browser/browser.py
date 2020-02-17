@@ -1,6 +1,4 @@
 import asyncio
-import sys
-from pathlib import Path
 
 import structlog
 
@@ -20,15 +18,10 @@ class Browser:
         self.loop = asyncio.get_event_loop()
 
     async def spawn(self):
-        exe = sys.executable
-        script = str(Path(__file__).parent.joinpath(Path("webengine_process.py")))
-        self.browser_proc = await asyncio.create_subprocess_exec(
-            exe,
-            script,
-            *sys.argv[1:],
-            stdin=asyncio.subprocess.PIPE,
-            stdout=asyncio.subprocess.PIPE
-        )
+        from . import webengine_process as web
+
+        self.browser_proc = web.Process()
+        self.browser_proc.start()
         self.running = True
 
         self.updater = asyncio.ensure_future(self._update_status())
@@ -43,8 +36,7 @@ class Browser:
             logger.debug("Waiting for message from browser process")
 
             try:
-                line = await self.browser_proc.stdout.readline()
-                state = rpc.deserialize(line)
+                state = await self.browser_proc.get_state_async()
             except EOFError:
                 if self.running:
                     logger.warn("Connection terminated with browser")
@@ -64,9 +56,7 @@ class Browser:
 
     async def authenticate_at(self, url, credentials):
         assert self.running
-        self.browser_proc.stdin.write(rpc.StartupInfo(url, credentials).serialize())
-        self.browser_proc.stdin.write(b"\n")
-        await self.browser_proc.stdin.drain()
+        self.browser_proc.authenticate_at(url, credentials)
 
     async def page_loaded(self):
         rv = await self._urls.get()

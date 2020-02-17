@@ -11,9 +11,9 @@ logger = structlog.get_logger()
 
 class Authenticator:
     def __init__(self, host, credentials=None):
-        self.session = create_http_session()
         self.host = host
         self.credentials = credentials
+        self.session = create_http_session()
 
     async def authenticate(self):
         self._detect_authentication_target_url()
@@ -75,8 +75,11 @@ class Authenticator:
 
 
 class AuthenticationError(Exception):
-    def __init__(self, response):
-        super().__init__((response,))
+    pass
+
+
+class AuthResponseError(AuthenticationError):
+    pass
 
 
 def create_http_session():
@@ -133,16 +136,21 @@ def parse_response(resp):
 
 def parse_auth_request_response(xml):
     assert xml.auth.get("id") == "main"
-    resp = AuthRequestResponse(
-        auth_id=xml.auth.get("id"),
-        auth_title=xml.auth.title,
-        auth_message=xml.auth.message,
-        auth_error=getattr(xml.auth, "error", ""),
-        opaque=xml.opaque,
-        login_url=xml.auth["sso-v2-login"],
-        login_final_url=xml.auth["sso-v2-login-final"],
-        token_cookie_name=xml.auth["sso-v2-token-cookie-name"],
-    )
+
+    try:
+        resp = AuthRequestResponse(
+            auth_id=xml.auth.get("id"),
+            auth_title=xml.auth.title,
+            auth_message=xml.auth.message,
+            auth_error=getattr(xml.auth, "error", ""),
+            opaque=xml.opaque,
+            login_url=xml.auth["sso-v2-login"],
+            login_final_url=xml.auth["sso-v2-login-final"],
+            token_cookie_name=xml.auth["sso-v2-token-cookie-name"],
+        )
+    except AttributeError as exc:
+        raise AuthResponseError(exc)
+
     logger.info(
         "Response received",
         id=resp.auth_id,
