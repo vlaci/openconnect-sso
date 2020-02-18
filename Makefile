@@ -26,8 +26,13 @@ endif
 			printf "$(YELLOW)%s$(RESET)\n%-12s %s\n", m[1], "", m[2]; \
 		};\
 	}; \
+	match($$0, /^[^: ]+\s*:\s*([^?= ]+)\s*\?=\s*([^# ]+)?\s*## +(.*)/, m) { \
+		if (length(m[2]) == 0) { \
+			m[2] = "unset"; \
+		}; \
+		printf "%-13s- $(GREEN)%s$(RESET): %s (default: $(BOLD)%s$(RESET))\n", "", m[1], m[3], m[2]; \
+	} \
 	' $(MAKEFILE_LIST)
-
 
 .PHONY: dev
 dev:  ## Initializes repository for development
@@ -61,3 +66,20 @@ pre-commit:
 .PHONY: test
 test:  ## Run tests
 	$(NIX_QTWRAPPER) pytest
+
+###############################################################################
+## Release
+.PHONY: changelog
+changelog:  ## Shows the project's changelog
+	@{  trap "rm -f .reno_err" EXIT; \
+		reno report $(if $(ONLY_CURRENT),\
+			--earliest-version=$$(git describe --abbrev=0 --tags)\
+		)\
+		2> .reno_err || cat .reno_err; } \
+		| pandoc --from rst --to $(FORMAT) $(if $(OUTPUT_FILE),-o $(OUTPUT_FILE))
+changelog: FORMAT ?= gfm  ## Output format for changelog
+changelog: ONLY_CURRENT ?=  ## Log only current (and unreleased) versions changes
+changelog: OUTPUT_FILE ?=  ## Write changelog to file instead of displaying
+
+CHANGELOG.md: $(wildcard releasenotes/**/*)
+	$(MAKE) changelog OUTPUT_FILE=CHANGELOG.md
