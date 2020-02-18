@@ -1,5 +1,8 @@
-EM_B   = "\\e[1m"
-EM_RST = "\\e[0m"
+BOLD   = \033[1m
+RED    = \033[31m
+GREEN  = \033[32m
+YELLOW = \033[33m
+RESET  = \033[0m
 
 NIX_QTWRAPPER ?= # Set up environment for locating Qt libraries from Nix
 
@@ -9,31 +12,38 @@ all: help
 ## General
 .PHONY: help
 help:  ## Show possible make targets
-	@echo "usage: make <target> [VAR=value ...]"
-	@sed -E -n \
-		-e 's/^## ([^:]+)/\n\1 targets:/p' \
-		-e 's/^([^:]+)\s*:\s*[^#=]+## +(.*)/  \1\t\2/p' \
-	| column \
-		--table \
-		--table-empty-lines \
-		--separator '	' \
-		--table-wrap 2
+ifeq (, $(shell which gawk))
+ $(error "This target requires 'gawk'. Install that first.")
+endif
+	@echo -e "Usage: $(YELLOW)make$(RESET) $(GREEN)<target>$(RESET)"
+	@gawk 'match($$0, /^## (.+)$$/, m) { \
+		printf "\n$(BOLD)%s targets:$(RESET)\n", m[1]; \
+	}; \
+	match($$0, /^([^:]+)\s*:\s*[^#=]+## +(.*)/, m) { \
+		if (length(m[1]) < 10) { \
+			printf "  $(YELLOW)%-10s$(RESET) %s\n", m[1], m[2]; \
+		} else { \
+			printf "$(YELLOW)%s$(RESET)\n%-12s %s\n", m[1], "", m[2]; \
+		};\
+	}; \
+	' $(MAKEFILE_LIST)
+
 
 .PHONY: dev
 dev:  ## Initializes repository for development
-	@echo -e "$(EM_B)-> Setting up pre-commit hooks...$(EM_RST)"
+	@echo -e "$(BOLD)-> Setting up pre-commit hooks...$(RESET)"
 	pre-commit install --install-hooks
 
-	@echo -e "$(EM_B)-> Removing existing .venv directory if exists...$(EM_RST)"
+	@echo -e "$(BOLD)-> Removing existing .venv directory if exists...$(RESET)"
 	rm -fr .venv
 
-	@echo -e "$(EM_B)-> Creating virtualenv in .venv...$(EM_RST)"
+	@echo -e "$(BOLD)-> Creating virtualenv in .venv...$(RESET)"
 	python3 -m venv .venv
 
-	@echo -e "$(EM_B)-> Installing openconnect-sso in develop mode..$(EM_RST)"
+	@echo -e "$(BOLD)-> Installing openconnect-sso in develop mode...$(RESET)"
 	source .venv/bin/activate && poetry install
 
-	@echo -e "$(EM_B)=> Development installation finished.$(EM_RST)"
+	@echo -e "$(BOLD)$(YELLOW)=> Development installation finished.$(RESET)"
 
 .PHONY: clean
 clean:  ## Remove temporary files and artifacts
