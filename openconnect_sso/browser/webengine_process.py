@@ -1,4 +1,5 @@
 import asyncio
+import enum
 import json
 import multiprocessing
 import signal
@@ -17,6 +18,11 @@ from openconnect_sso import config
 
 app = None
 logger = structlog.get_logger("webengine")
+
+
+class DisplayMode(enum.Enum):
+    HIDDEN = 0
+    SHOWN = 1
 
 
 @attr.s
@@ -42,11 +48,12 @@ class SetCookie:
 
 
 class Process(multiprocessing.Process):
-    def __init__(self):
+    def __init__(self, display_mode):
         super().__init__()
 
         self._commands = multiprocessing.Queue()
         self._states = multiprocessing.Queue()
+        self.display_mode = display_mode
 
     def authenticate_at(self, url, credentials):
         self._commands.put(StartupInfo(url, credentials))
@@ -65,7 +72,10 @@ class Process(multiprocessing.Process):
         global app
         cfg = config.load()
 
-        app = QApplication(sys.argv)
+        argv = sys.argv.copy()
+        if self.display_mode == DisplayMode.HIDDEN:
+            argv += ["-platform", "minimal"]
+        app = QApplication(argv)
 
         # In order to make Python able to handle signals
         force_python_execution = QTimer()

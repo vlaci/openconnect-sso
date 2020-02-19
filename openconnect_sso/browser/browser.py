@@ -16,9 +16,10 @@ class Browser:
         self.url = None
         self.cookies = {}
         self.loop = asyncio.get_event_loop()
+        self.display_mode = display_mode
 
     async def spawn(self):
-        self.browser_proc = web.Process()
+        self.browser_proc = web.Process(self.display_mode)
         self.browser_proc.start()
         self.running = True
 
