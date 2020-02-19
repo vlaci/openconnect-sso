@@ -11,10 +11,6 @@ repos:
     -   id: check-yaml
     -   id: check-added-large-files
     -   id: sort-simple-yaml
--   repo: https://github.com/nix-community/nixpkgs-fmt
-    rev: v0.6.1
-    hooks:
-    -   id: nixpkgs-fmt
 -   repo: https://gitlab.com/PyCQA/flake8
     rev: 3.7.9
     hooks:
