@@ -8,7 +8,6 @@ from pathlib import Path
 
 import structlog
 from prompt_toolkit import HTML
-from prompt_toolkit.eventloop import use_asyncio_event_loop
 from prompt_toolkit.shortcuts import radiolist_dialog
 
 from openconnect_sso import config
@@ -24,8 +23,6 @@ logger = structlog.get_logger()
 
 def run(args):
     configure_logger(logging.getLogger(), args.log_level)
-    loop = asyncio.get_event_loop()
-    use_asyncio_event_loop(loop)
 
     try:
         return asyncio.get_event_loop().run_until_complete(_run(args))
@@ -125,8 +122,7 @@ async def select_profile(profile_list):
             "The selection will be <b>saved</b> and not asked again unless the <pre>--profile-selector</pre> command line option is used"
         ),
         values=[(p, p.name) for i, p in enumerate(profile_list)],
-        async_=True,
-    ).to_asyncio_future()
+    ).run_async()
     asyncio.get_event_loop().remove_signal_handler(signal.SIGWINCH)
     if not selection:
         return selection
