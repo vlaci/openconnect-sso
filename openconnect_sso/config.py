@@ -1,3 +1,4 @@
+import enum
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse
 
@@ -115,3 +116,8 @@ class Config(ConfigNode):
             n: [AutoFillRule.from_dict(r) for r in rule] for n, rule in rules.items()
         },
     )
+
+
+class DisplayMode(enum.Enum):
+    HIDDEN = 0
+    SHOWN = 1

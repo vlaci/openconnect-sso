@@ -1,18 +1,17 @@
 ---
 features:
   - |
-    New command line arguments
-      ``--authenticate [json|shell]``
-        Exits after authentication and displays the authentication information
-        needed to initiate a connection. When the ``shell`` output format is
-        used the output is formatted the same way as ``openconnect`` formats its
-        output when the same argument is used. When ``json`` format is used, the
-        same information is displayed in json format.
+    ``--authenticate [json|shell]`` command line argument
+      Exits after authentication and displays the authentication information
+      needed to initiate a connection. When the ``shell`` output format is
+      used the output is formatted the same way as ``openconnect`` formats its
+      output when the same argument is used. When ``json`` format is used, the
+      same information is displayed in json format.
 
-        Kudos to @rschmied for the original pull request.
-
-      ``--version/-V``
-        Displays the version of ``openconnect-sso``
+      Kudos to @rschmied for the original pull request.
+  - |
+    ``--version/-V`` command line argument
+      Displays the version of ``openconnect-sso``
 
 upgrade:
   - |

@@ -3,12 +3,13 @@ import asyncio
 import structlog
 
 from . import webengine_process as web
+from ..config import DisplayMode
 
 logger = structlog.get_logger()
 
 
 class Browser:
-    def __init__(self, display_mode=web.DisplayMode.SHOWN):
+    def __init__(self, display_mode=DisplayMode.SHOWN):
         self.browser_proc = None
         self.updater = None
         self.running = False

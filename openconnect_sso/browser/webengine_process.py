@@ -1,5 +1,4 @@
 import asyncio
-import enum
 import json
 import multiprocessing
 import signal
@@ -18,11 +17,6 @@ from openconnect_sso import config
 
 app = None
 logger = structlog.get_logger("webengine")
-
-
-class DisplayMode(enum.Enum):
-    HIDDEN = 0
-    SHOWN = 1
 
 
 @attr.s
@@ -73,7 +67,7 @@ class Process(multiprocessing.Process):
         cfg = config.load()
 
         argv = sys.argv.copy()
-        if self.display_mode == DisplayMode.HIDDEN:
+        if self.display_mode == config.DisplayMode.HIDDEN:
             argv += ["-platform", "minimal"]
         app = QApplication(argv)
 

@@ -15,7 +15,7 @@ class Authenticator:
         self.credentials = credentials
         self.session = create_http_session()
 
-    async def authenticate(self):
+    async def authenticate(self, display_mode):
         self._detect_authentication_target_url()
 
         response = self._start_authentication()
@@ -36,7 +36,9 @@ class Authenticator:
 
         auth_request_response = response
 
-        sso_token = await self._authenticate_in_browser(auth_request_response)
+        sso_token = await self._authenticate_in_browser(
+            auth_request_response, display_mode
+        )
 
         response = self._complete_authentication(auth_request_response, sso_token)
         if not isinstance(response, AuthCompleteResponse):
@@ -62,8 +64,10 @@ class Authenticator:
         logger.debug("Auth init response received", content=response.content)
         return parse_response(response)
 
-    async def _authenticate_in_browser(self, auth_request_response):
-        return await authenticate_in_browser(auth_request_response, self.credentials)
+    async def _authenticate_in_browser(self, auth_request_response, display_mode):
+        return await authenticate_in_browser(
+            auth_request_response, self.credentials, display_mode
+        )
 
     def _complete_authentication(self, auth_request_response, sso_token):
         request = _create_auth_finish_request(

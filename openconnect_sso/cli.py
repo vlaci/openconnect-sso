@@ -58,6 +58,15 @@ def create_argparser():
     )
 
     parser.add_argument(
+        "--browser-display-mode",
+        help="Controls how the browser window is displayed. 'hidden' mode only works with saved credentials. Choices: {%(choices)s}",
+        choices=["shown", "hidden"],
+        metavar="DISPLAY-MODE",
+        nargs="?",
+        default="shown",
+    )
+
+    parser.add_argument(
         "-V", "--version", action="version", version=f"%(prog)s {__version__}"
     )
 
