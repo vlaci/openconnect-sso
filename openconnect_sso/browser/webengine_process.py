@@ -1,10 +1,10 @@
 import asyncio
 import json
-import logging
 import multiprocessing
 import signal
 import sys
 
+import attr
 import pkg_resources
 import structlog
 
@@ -13,23 +13,44 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineScript
 from PyQt5.QtWidgets import QApplication
 
 from openconnect_sso import config
-from openconnect_sso.app import configure_logger
-from openconnect_sso.browser import rpc_types as rpc
-from openconnect_sso.cli import create_argparser
+
 
 app = None
 logger = structlog.get_logger("webengine")
 
 
+@attr.s
+class Url:
+    url = attr.ib()
+
+
+@attr.s
+class Credentials:
+    credentials = attr.ib()
+
+
+@attr.s
+class StartupInfo:
+    url = attr.ib()
+    credentials = attr.ib()
+
+
+@attr.s
+class SetCookie:
+    name = attr.ib()
+    value = attr.ib()
+
+
 class Process(multiprocessing.Process):
-    def __init__(self):
+    def __init__(self, display_mode):
         super().__init__()
 
         self._commands = multiprocessing.Queue()
         self._states = multiprocessing.Queue()
+        self.display_mode = display_mode
 
     def authenticate_at(self, url, credentials):
-        self._commands.put(rpc.StartupInfo(url, credentials))
+        self._commands.put(StartupInfo(url, credentials))
 
     async def get_state_async(self):
         while self.is_alive():
@@ -43,12 +64,12 @@ class Process(multiprocessing.Process):
     def run(self):
         # To work around funky GC conflicts with C++ code by ensuring QApplication terminates last
         global app
-        args = create_argparser().parse_known_args()[0]
-        configure_logger(logging.getLogger(), args.log_level)
-
         cfg = config.load()
 
-        app = QApplication(sys.argv)
+        argv = sys.argv.copy()
+        if self.display_mode == config.DisplayMode.HIDDEN:
+            argv += ["-platform", "minimal"]
+        app = QApplication(argv)
 
         # In order to make Python able to handle signals
         force_python_execution = QTimer()
@@ -121,13 +142,13 @@ autoFill();
 
     def _on_cookie_added(self, cookie):
         logger.debug("Cookie set", name=to_str(cookie.name()))
-        self._on_update(rpc.SetCookie(to_str(cookie.name()), to_str(cookie.value())))
+        self._on_update(SetCookie(to_str(cookie.name()), to_str(cookie.value())))
 
     def _on_load_finished(self, success):
         url = self.page().url().toString()
         logger.debug("Page loaded", url=url)
 
-        self._on_update(rpc.Url(url))
+        self._on_update(Url(url))
 
 
 def to_str(qval):

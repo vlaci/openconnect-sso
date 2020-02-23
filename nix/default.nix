@@ -13,7 +13,11 @@ let
   shell = pkgs.mkShell {
     inputsFrom = [ openconnect-sso ];
     buildInputs = with pkgs; [
-      gnumake # Makefile
+      # For Makefile
+      gawk
+      git
+      gnumake
+      which
       niv # Dependency manager for Nix expressions
       nixpkgs-fmt # To format Nix source files
       pandoc # To convert reno release notes to markdown

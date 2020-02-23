@@ -2,13 +2,14 @@ import asyncio
 
 import structlog
 
-from . import rpc_types as rpc
+from . import webengine_process as web
+from ..config import DisplayMode
 
 logger = structlog.get_logger()
 
 
 class Browser:
-    def __init__(self):
+    def __init__(self, display_mode=DisplayMode.SHOWN):
         self.browser_proc = None
         self.updater = None
         self.running = False
@@ -16,11 +17,10 @@ class Browser:
         self.url = None
         self.cookies = {}
         self.loop = asyncio.get_event_loop()
+        self.display_mode = display_mode
 
     async def spawn(self):
-        from . import webengine_process as web
-
-        self.browser_proc = web.Process()
+        self.browser_proc = web.Process(self.display_mode)
         self.browser_proc.start()
         self.running = True
 
@@ -47,9 +47,9 @@ class Browser:
                 return
             logger.debug("Message received from browser", message=state)
 
-            if isinstance(state, rpc.Url):
+            if isinstance(state, web.Url):
                 await self._urls.put(state.url)
-            elif isinstance(state, rpc.SetCookie):
+            elif isinstance(state, web.SetCookie):
                 self.cookies[state.name] = state.value
             else:
                 logger.error("Message unrecognized", message=state)
