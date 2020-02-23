@@ -56,7 +56,7 @@ version = "2019.11.28"
 [[package]]
 category = "main"
 description = "Foreign Function Interface for Python calling C code."
-marker = "sys_platform == \"linux\" and python_version >= \"3.5\""
+marker = "sys_platform == \"linux\""
 name = "cffi"
 optional = false
 python-versions = "*"
@@ -114,7 +114,7 @@ coverage = "*"
 [[package]]
 category = "main"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
-marker = "sys_platform == \"linux\" and python_version >= \"3.5\""
+marker = "sys_platform == \"linux\""
 name = "cryptography"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
@@ -150,14 +150,6 @@ pgp = ["gpg"]
 
 [[package]]
 category = "main"
-description = "Discover and load entry points from installed packages."
-name = "entrypoints"
-optional = false
-python-versions = ">=2.7"
-version = "0.3"
-
-[[package]]
-category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -183,7 +175,7 @@ testing = ["packaging", "importlib-resources"]
 [[package]]
 category = "main"
 description = "Low-level, pure Python DBus protocol wrapper."
-marker = "sys_platform == \"linux\" and python_version >= \"3.5\""
+marker = "sys_platform == \"linux\""
 name = "jeepney"
 optional = false
 python-versions = ">=3.5"
@@ -197,20 +189,21 @@ category = "main"
 description = "Store and access your passwords safely."
 name = "keyring"
 optional = false
-python-versions = ">=2.7"
-version = "18.0.1"
+python-versions = ">=3.6"
+version = "21.1.0"
 
 [package.dependencies]
-entrypoints = "*"
+SecretStorage = ">=3"
+jeepney = ">=0.4.2"
 pywin32-ctypes = "<0.1.0 || >0.1.0,<0.1.1 || >0.1.1"
 
-[package.dependencies.secretstorage]
-python = ">=3.5"
+[package.dependencies.importlib-metadata]
+python = "<3.8"
 version = "*"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
-testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs", "pytest-flake8"]
+testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-black-multipy", "pytest-cov"]
 
 [[package]]
 category = "main"
@@ -280,7 +273,7 @@ version = "1.8.1"
 [[package]]
 category = "main"
 description = "C parser in Python"
-marker = "sys_platform == \"linux\" and python_version >= \"3.5\""
+marker = "sys_platform == \"linux\""
 name = "pycparser"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -443,7 +436,7 @@ socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
 [[package]]
 category = "main"
 description = "Python bindings to FreeDesktop.org Secret Service API"
-marker = "sys_platform == \"linux\" and python_version >= \"3.5\""
+marker = "sys_platform == \"linux\""
 name = "secretstorage"
 optional = false
 python-versions = ">=3.5"
@@ -552,7 +545,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 full = ["PyQt5", "PyQtWebEngine"]
 
 [metadata]
-content-hash = "4665b3755c630c530496c2b98f82dbad930a8c452ee781a7108121d5358849b5"
+content-hash = "5bfac8301b247e8a67113d089d166e4c616eb178bd2fad6c31c939164e0df7c6"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -689,10 +682,6 @@ dulwich = [
     {file = "dulwich-0.19.15-py3-none-any.whl", hash = "sha256:3285366eb2e97ee89ac4715d24f8c66aff78f7c7040f2b1c3d7cfc8973293ced"},
     {file = "dulwich-0.19.15.tar.gz", hash = "sha256:805a9b1932dc28b91f359f529c2e46b7623aec3ab719c96d3f2fc63d0d8d8411"},
 ]
-entrypoints = [
-    {file = "entrypoints-0.3-py2.py3-none-any.whl", hash = "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19"},
-    {file = "entrypoints-0.3.tar.gz", hash = "sha256:c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"},
-]
 idna = [
     {file = "idna-2.9-py2.py3-none-any.whl", hash = "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"},
     {file = "idna-2.9.tar.gz", hash = "sha256:7588d1c14ae4c77d74036e8c22ff447b26d0fde8f007354fd48a7814db15b7cb"},
@@ -706,8 +695,8 @@ jeepney = [
     {file = "jeepney-0.4.2.tar.gz", hash = "sha256:0ba6d8c597e9bef1ebd18aaec595f942a264e25c1a48f164d46120eacaa2e9bb"},
 ]
 keyring = [
-    {file = "keyring-18.0.1-py2.py3-none-any.whl", hash = "sha256:7b29ebfcf8678c4da531b2478a912eea01e80007e5ddca9ee0c7038cb3489ec6"},
-    {file = "keyring-18.0.1.tar.gz", hash = "sha256:67d6cc0132bd77922725fae9f18366bb314fd8f95ff4d323a4df41890a96a838"},
+    {file = "keyring-21.1.0-py2.py3-none-any.whl", hash = "sha256:24ae23ab2d6adc59138339e56843e33ec7b0a6b2f06302662477085c6c0aca00"},
+    {file = "keyring-21.1.0.tar.gz", hash = "sha256:1f393f7466314068961c7e1d508120c092bd71fa54e3d93b76180b526d4abc56"},
 ]
 lxml = [
     {file = "lxml-4.5.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:0701f7965903a1c3f6f09328c1278ac0eee8f56f244e66af79cb224b7ef3801c"},
