@@ -21,7 +21,7 @@ openconnect-sso = "openconnect_sso.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.6"
-attrs = ">=18.2, <19.2.0"
+attrs = ">=18.2, <=19.3.0"
 colorama = "^0.4"
 importlib-metadata = { version = "^1.4.0", python = "<3.8" }
 lxml = "^4.3"

@@ -171,8 +171,8 @@ class AuthRequestResponse:
     auth_message = attr.ib(converter=str)
     auth_error = attr.ib(converter=str)
     login_url = attr.ib(converter=str)
-    login_final_url = attr.ib(convert=str)
-    token_cookie_name = attr.ib(convert=str)
+    login_final_url = attr.ib(converter=str)
+    token_cookie_name = attr.ib(converter=str)
     opaque = attr.ib()
 
 
