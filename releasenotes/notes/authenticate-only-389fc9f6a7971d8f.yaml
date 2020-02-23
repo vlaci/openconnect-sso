@@ -2,7 +2,7 @@
 features:
   - |
     New command line arguments
-      ``--authenticate [(json|shell)]``
+      ``--authenticate [json|shell]``
         Exits after authentication and displays the authentication information
         needed to initiate a connection. When the ``shell`` output format is
         used the output is formatted the same way as ``openconnect`` formats its
