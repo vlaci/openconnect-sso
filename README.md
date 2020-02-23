@@ -41,6 +41,16 @@ pipx install openconnect-sso
 Of course you can also install via `pip` instead of `pipx` if you'd like to
 install systemwide or a virtualenv of your choice.
 
+### On Arch Linux
+
+There is an unofficial package available for Arch Linux on
+[AUR](https://aur.archlinux.org/packages/openconnect-sso/). You can use your
+favorite AUR helper to install it:
+
+``` shell
+yay -S openconnect-sso
+```
+
 ### Using nix
 
 The easiest method to try is by installing directly:
