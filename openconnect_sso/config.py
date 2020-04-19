@@ -62,7 +62,7 @@ class ConfigNode:
 class HostProfile(ConfigNode):
     address = attr.ib(converter=str)
     user_group = attr.ib(converter=str)
-    name = attr.ib(converter=str, default="UNNAMED")
+    name = attr.ib(converter=str)  # authgroup
 
     @property
     def vpn_url(self):

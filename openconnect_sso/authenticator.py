@@ -60,6 +60,7 @@ class Authenticator:
 
     def _start_authentication(self):
         request = _create_auth_init_request(self.host, self.host.vpn_url)
+        logger.debug("Sending auth init request", content=request)
         response = self.session.post(self.host.vpn_url, request)
         logger.debug("Auth init response received", content=response.content)
         return parse_response(response)
@@ -73,6 +74,7 @@ class Authenticator:
         request = _create_auth_finish_request(
             self.host, auth_request_response, sso_token
         )
+        logger.debug("Sending auth finish request", content=request)
         response = self.session.post(self.host.vpn_url, request)
         logger.debug("Auth finish response received", content=response.content)
         return parse_response(response)
@@ -144,7 +146,7 @@ def parse_auth_request_response(xml):
     try:
         resp = AuthRequestResponse(
             auth_id=xml.auth.get("id"),
-            auth_title=xml.auth.title,
+            auth_title=getattr(xml.auth, "title", ""),
             auth_message=xml.auth.message,
             auth_error=getattr(xml.auth, "error", ""),
             opaque=xml.opaque,
