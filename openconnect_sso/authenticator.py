@@ -146,7 +146,7 @@ def parse_auth_request_response(xml):
     try:
         resp = AuthRequestResponse(
             auth_id=xml.auth.get("id"),
-            auth_title=xml.auth.title,
+            auth_title=getattr(xml.auth, "title", ""),
             auth_message=xml.auth.message,
             auth_error=getattr(xml.auth, "error", ""),
             opaque=xml.opaque,
