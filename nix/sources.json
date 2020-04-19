@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "poetry2nix": {
-        "branch": "master",
+        "branch": "1.7.1",
         "description": "Convert poetry projects to nix automagically [maintainer=@adisbladis] ",
         "homepage": "",
         "owner": "nix-community",
         "repo": "poetry2nix",
-        "rev": "cdb1bd83a31d7ae12dd5b5b1ea460c11c942be16",
-        "sha256": "0xni4vl1i368ff0xawqkdg6zw1w7xzdn6xi19c3hjig4hx6fs4b9",
+        "rev": "6a77db8213cc7c522cbe54470727e4a0ee292559",
+        "sha256": "0ggfb5cxfhccsxnn42r52p7j8d91jyj6zf51qm5a5jbgj0xdq8gg",
         "type": "tarball",
-        "url": "https://github.com/nix-community/poetry2nix/archive/cdb1bd83a31d7ae12dd5b5b1ea460c11c942be16.tar.gz",
+        "url": "https://github.com/nix-community/poetry2nix/archive/6a77db8213cc7c522cbe54470727e4a0ee292559.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
