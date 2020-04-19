@@ -40,14 +40,25 @@ def create_argparser():
         "https://vpn.server.com, https.vpn.server.com.usergroup",
     )
 
-    server_settings.add_argument(
+    auth_settings = parser.add_argument_group(
+        "Authentication",
+        "Used for the same purpose as in OpenConnect. Refer to OpenConnect's documentation for further information",
+    )
+
+    auth_settings.add_argument(
+        "--authgroup",
+        help="Set to the required authentication login selection",
+        default="",
+    )
+
+    auth_settings.add_argument(
         "-g",
         "--usergroup",
         help="Override usergroup setting from --server argument",
         default="",
     )
 
-    parser.add_argument(
+    auth_settings.add_argument(
         "--authenticate",
         help="Authenticate only, and output the information needed to make the connection. Output formatting choices: {%(choices)s}",
         choices=["shell", "json"],

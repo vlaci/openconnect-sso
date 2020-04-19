@@ -16,4 +16,4 @@ from openconnect_sso.config import HostProfile
     ),
 )
 def test_vpn_url(server, group, expected_url):
-    assert HostProfile(server, group).vpn_url == expected_url
+    assert HostProfile(server, group, "name").vpn_url == expected_url

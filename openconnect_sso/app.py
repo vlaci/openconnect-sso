@@ -83,7 +83,9 @@ async def _run(args):
             logger.error("No profile selected")
             return 18
     elif args.server:
-        selected_profile = config.HostProfile(args.server, args.usergroup)
+        selected_profile = config.HostProfile(
+            args.server, args.usergroup, args.authgroup
+        )
     else:
         raise ValueError(
             "Cannot determine server address. Invalid arguments specified."
