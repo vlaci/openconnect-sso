@@ -141,7 +141,8 @@ async def run_openconnect(auth_info, host, args):
     command_line = [
         "sudo",
         "openconnect",
-        "--cookie-on-stdin",
+        "--cookie",
+        auth_info.session_token,
         "--servercert",
         auth_info.server_cert_hash,
         *args,
@@ -151,10 +152,5 @@ async def run_openconnect(auth_info, host, args):
     proc = await asyncio.create_subprocess_exec(
         *command_line,
         host.vpn_url,
-        stdin=asyncio.subprocess.PIPE,
-        stdout=None,
-        stderr=None,
     )
-    proc.stdin.write(f"{auth_info.session_token}\n".encode())
-    await proc.stdin.drain()
     await proc.wait()
