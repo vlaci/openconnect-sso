@@ -146,11 +146,9 @@ async def run_openconnect(auth_info, host, args):
         "--servercert",
         auth_info.server_cert_hash,
         *args,
+        host.vpn_url,
     ]
 
     logger.debug("Starting OpenConnect", command_line=command_line)
-    proc = await asyncio.create_subprocess_exec(
-        *command_line,
-        host.vpn_url,
-    )
+    proc = await asyncio.create_subprocess_exec(*command_line)
     await proc.wait()
