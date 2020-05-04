@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+REPO_DIR=$(git rev-parse --show-toplevel)
+COMMAND=${1:-}
+
+function get-help {
+     cat <<HELP
+The following commands are available:
+    activate: activate virtualenv (run \`eval \$(devenv activate)`\)
+    develop:  installs openconnect-sso to a virtualenv (.venv)
+
+Run \`nix-build\` to build the package derivation. Result can be accessed via
+the \`result\` symbolic link in the repository root.
+HELP
+}
+
+function develop {
+
+     cd $REPO_DIR
+
+     echo "-> Removing existing .venv directory if exists..."
+     rm -fr .venv
+
+     echo "-> Creating virtualenv in .venv..."
+     python -m venv .venv
+     eval $(activate)
+
+     echo "-> Installing openconnect-sso in develop mode"
+     poetry install
+
+     echo "-> Installation finished."
+}
+
+function activate {
+     if [[ -f .venv/bin/python ]]; then
+         local VENV
+         VENV=${REPO_DIR}/.venv
+         cat <<EOF
+VIRTUAL_ENV="${VENV}"
+export VIRTUAL_ENV
+PYTHON_HOME=${VENV}
+export PYTHON_HOME
+PATH="\${PATH}:${VENV}/bin"
+export PATH
+EOF
+     else
+         >&2 echo "==> Development virtualenv not present or invalid."
+         >&2 echo "    Run \`devenv develop\` to re-create it"
+     fi
+}
+
+case $COMMAND in
+    activate)
+        activate
+        ;;
+    develop)
+        develop
+        ;;
+    help|--help)
+        get-help
+        ;;
+    *)
+        echo "Unknown command \`${COMMAND}\`"
+        echo
+        get-help
+        exit 1
+        ;;
+esac
