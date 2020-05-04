@@ -90,6 +90,11 @@ in
 }
 ```
 
+### Windows
+
+Install with pip/pipx and be sure that you have `sudo` and `openconnect` executables
+in your PATH.
+
 ## Configuration
 
 If you want to save credentials and get them automatically
