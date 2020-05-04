@@ -151,4 +151,5 @@ $ result/bin/openconnect-sso --help
 ```
 
 Alternatively you may just [get Poetry](https://python-poetry.org/docs/) and
-start developing using the `scripts/devenv` helper script.
+start developing by using the included `Makefile`. Type `make help` to see the
+possibble make targets.
