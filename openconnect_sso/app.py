@@ -2,6 +2,7 @@ import asyncio
 import getpass
 import json
 import logging
+import os
 import shlex
 import signal
 from pathlib import Path
@@ -25,6 +26,8 @@ def run(args):
     configure_logger(logging.getLogger(), args.log_level)
 
     try:
+        if os.name == 'nt':
+            asyncio.set_event_loop(asyncio.ProactorEventLoop())
         return asyncio.get_event_loop().run_until_complete(_run(args))
     except KeyboardInterrupt:
         logger.warn("CTRL-C pressed, exiting")
