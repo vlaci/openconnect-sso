@@ -11,7 +11,6 @@ let
   openconnect-sso = callPackage ./openconnect-sso.nix { inherit (pkgs) python3Packages; };
 
   shell = pkgs.mkShell {
-    inputsFrom = [ openconnect-sso ];
     buildInputs = with pkgs; [
       # For Makefile
       gawk
@@ -27,6 +26,12 @@ let
       with pythonPackages; [
         pre-commit # To check coding style during commit
       ]
+    ) ++ (
+      # only install those dependencies in the shell env which are meant to be
+      # visible in the environment after installation of the actual package.
+      # Specifying `inputsFrom = [ openconnect-sso ]` introduces weird errors as
+      # it brings transitive dependencies into scope.
+      openconnect-sso.propagatedBuildInputs
     );
     shellHook = ''
       # Python wheels are ZIP files which cannot contain timestamps prior to
