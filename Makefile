@@ -103,7 +103,7 @@ pre-commit:
 
 .PHONY: test
 test:  ## Run tests
-	$(NIX_QTWRAPPER) pytest
+	$(NIX_QTWRAPPER) .venv/bin/pytest
 
 ###############################################################################
 ## Release
