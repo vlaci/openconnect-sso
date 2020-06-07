@@ -9,6 +9,7 @@ import pkg_resources
 import structlog
 
 from PyQt5.QtCore import QUrl, QTimer
+from PyQt5.QtNetwork import QNetworkProxy, QNetworkProxyFactory
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineScript
 from PyQt5.QtWidgets import QApplication
 
@@ -70,6 +71,10 @@ class Process(multiprocessing.Process):
         if self.display_mode == config.DisplayMode.HIDDEN:
             argv += ["-platform", "minimal"]
         app = QApplication(argv)
+
+        proxies = QNetworkProxyFactory.systemProxyForQuery()
+        if proxies:
+            QNetworkProxy.setApplicationProxy(proxies[0])
 
         # In order to make Python able to handle signals
         force_python_execution = QTimer()

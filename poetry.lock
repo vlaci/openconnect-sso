@@ -310,6 +310,14 @@ PyQt5 = ">=5.15"
 PyQt5-sip = ">=12.8,<13"
 
 [[package]]
+category = "main"
+description = "A Python SOCKS client module. See https://github.com/Anorov/PySocks for more information."
+name = "pysocks"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.7.1"
+
+[[package]]
 category = "dev"
 description = "pytest: simple powerful testing with Python"
 name = "pytest"
@@ -544,7 +552,8 @@ testing = ["jaraco.itertools", "func-timeout"]
 full = ["PyQt5", "PyQtWebEngine"]
 
 [metadata]
-content-hash = "e20f6d3cdcf151876bebf9d6ffed7ba0e9c504b6417ba44e85f8cba8b9ec2e71"
+content-hash = "78cb0f2c9700f871a6d162ca24e9a4956f9c05b053c4d2df171f5f0ef4683a86"
+lock-version = "1.0"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -795,6 +804,11 @@ pyqtwebengine = [
     {file = "PyQtWebEngine-5.15.0-5.15.0-cp35.cp36.cp37.cp38-none-win32.whl", hash = "sha256:f4a2a6c09eba82e52b7b10ed038d0bef4b2562e3bdddc0d3b97cbd140e529ad2"},
     {file = "PyQtWebEngine-5.15.0-5.15.0-cp35.cp36.cp37.cp38-none-win_amd64.whl", hash = "sha256:6652a76bf8a30c6e31eda64c20b175e8b6d6d655ed1749d6b9a24e21d7b7f4e5"},
     {file = "PyQtWebEngine-5.15.0.tar.gz", hash = "sha256:670812688e40bf75f70ddf01eadd897d231300318d3856b275bf8e7e0085bf75"},
+]
+pysocks = [
+    {file = "PySocks-1.7.1-py27-none-any.whl", hash = "sha256:08e69f092cc6dbe92a0fdd16eeb9b9ffbc13cadfe5ca4c7bd92ffb078b293299"},
+    {file = "PySocks-1.7.1-py3-none-any.whl", hash = "sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5"},
+    {file = "PySocks-1.7.1.tar.gz", hash = "sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0"},
 ]
 pytest = [
     {file = "pytest-3.10.1-py2.py3-none-any.whl", hash = "sha256:3f193df1cfe1d1609d4c583838bea3d532b18d6160fd3f55c9447fdca30848ec"},
