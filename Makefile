@@ -1,6 +1,8 @@
 NIX_QTWRAPPER ?= # Set up environment for locating Qt libraries from Nix
 CONTINUE_ON_ERROR ?= # should be used only for testing
 
+PRE_COMMIT_HOME=$(dir MAKEFILE_LIST).git/pre-commit
+
 .ONESHELL:
 SHELL = bash
 .SHELLFLAGS = -euo pipefail -c
