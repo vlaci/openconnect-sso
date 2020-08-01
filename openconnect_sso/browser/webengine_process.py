@@ -3,13 +3,14 @@ import json
 import multiprocessing
 import signal
 import sys
+from urllib.parse import urlparse
 
 import attr
 import pkg_resources
 import structlog
 
 from PyQt5.QtCore import QUrl, QTimer
-from PyQt5.QtNetwork import QNetworkProxy, QNetworkProxyFactory
+from PyQt5.QtNetwork import QNetworkProxy
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineScript
 from PyQt5.QtWidgets import QApplication
 
@@ -43,11 +44,12 @@ class SetCookie:
 
 
 class Process(multiprocessing.Process):
-    def __init__(self, display_mode):
+    def __init__(self, proxy, display_mode):
         super().__init__()
 
         self._commands = multiprocessing.Queue()
         self._states = multiprocessing.Queue()
+        self.proxy = proxy
         self.display_mode = display_mode
 
     def authenticate_at(self, url, credentials):
@@ -72,9 +74,17 @@ class Process(multiprocessing.Process):
             argv += ["-platform", "minimal"]
         app = QApplication(argv)
 
-        proxies = QNetworkProxyFactory.systemProxyForQuery()
-        if proxies:
-            QNetworkProxy.setApplicationProxy(proxies[0])
+        if self.proxy:
+            parsed = urlparse(self.proxy)
+            if parsed.scheme.startswith("socks5"):
+                proxy_type = QNetworkProxy.Socks5Proxy
+            elif parsed.scheme.startswith("http"):
+                proxy_type = QNetworkProxy.HttpProxy
+            else:
+                raise ValueError("Unsupported proxy type", parsed.scheme)
+            proxy = QNetworkProxy(proxy_type, parsed.hostname, parsed.port)
+
+            QNetworkProxy.setApplicationProxy(proxy)
 
         # In order to make Python able to handle signals
         force_python_execution = QTimer()
