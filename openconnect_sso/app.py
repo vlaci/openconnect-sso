@@ -100,7 +100,9 @@ async def _run(args):
 
     display_mode = config.DisplayMode[args.browser_display_mode.upper()]
 
-    auth_response = await authenticate_to(selected_profile, credentials, display_mode)
+    auth_response = await authenticate_to(
+        selected_profile, args.proxy, credentials, display_mode
+    )
     if args.authenticate:
         logger.warn("Exiting after login, as requested")
         details = {
@@ -116,7 +118,9 @@ async def _run(args):
             )
         return 0
 
-    return await run_openconnect(auth_response, selected_profile, args.openconnect_args)
+    return await run_openconnect(
+        auth_response, selected_profile, args.proxy, args.openconnect_args
+    )
 
 
 async def select_profile(profile_list):
@@ -138,12 +142,12 @@ async def select_profile(profile_list):
     return selection
 
 
-def authenticate_to(host, credentials, display_mode):
+def authenticate_to(host, proxy, credentials, display_mode):
     logger.info("Authenticating to VPN endpoint", name=host.name, address=host.address)
-    return Authenticator(host, credentials).authenticate(display_mode)
+    return Authenticator(host, proxy, credentials).authenticate(display_mode)
 
 
-async def run_openconnect(auth_info, host, args):
+async def run_openconnect(auth_info, host, proxy, args):
     command_line = [
         "sudo",
         "openconnect",
@@ -154,6 +158,8 @@ async def run_openconnect(auth_info, host, args):
         *args,
         host.vpn_url,
     ]
+    if proxy:
+        command_line.extend(["--proxy", proxy])
 
     logger.debug("Starting OpenConnect", command_line=command_line)
     proc = await asyncio.create_subprocess_exec(*command_line)

@@ -32,6 +32,8 @@ def create_argparser():
         default=False,
     )
 
+    server_settings.add_argument("--proxy", help="Use a proxy server")
+
     server_settings.add_argument(
         "-s",
         "--server",
