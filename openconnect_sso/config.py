@@ -99,7 +99,7 @@ class Credentials(ConfigNode):
 
     @property
     def password(self):
-        return keyring.get_credential(APP_NAME, self.username).password
+        return keyring.get_password(APP_NAME, self.username)
 
     @password.setter
     def password(self, value):
