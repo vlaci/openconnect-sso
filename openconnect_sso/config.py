@@ -62,6 +62,7 @@ class HostProfile(ConfigNode):
     address = attr.ib(converter=str)
     user_group = attr.ib(converter=str)
     name = attr.ib(converter=str)  # authgroup
+    on_disconnect = attr.ib(converter=str)
 
     @property
     def vpn_url(self):

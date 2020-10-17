@@ -84,7 +84,7 @@ async def _run(args):
             return 18
     elif args.server:
         selected_profile = config.HostProfile(
-            args.server, args.usergroup, args.authgroup
+            args.server, args.usergroup, args.authgroup, args.on_disconnect
         )
     else:
         raise ValueError(
@@ -113,7 +113,12 @@ async def _run(args):
             )
         return 0
 
-    return await run_openconnect(auth_response, selected_profile, args.openconnect_args)
+    try:
+        return await run_openconnect(
+            auth_response, selected_profile, args.openconnect_args
+        )
+    finally:
+        await handle_disconnect(selected_profile.on_disconnect)
 
 
 async def select_profile(profile_list):
@@ -162,3 +167,10 @@ async def run_openconnect(auth_info, host, args):
     finally:
         await proc.wait()
 
+
+async def handle_disconnect(command):
+    if command:
+        logger.info(f"Running {command!r} on shutdown...")
+        command = str(Path(command).expanduser())
+        proc = await asyncio.create_subprocess_exec(command)
+        await asyncio.wait_for(proc.wait(), timeout=5)

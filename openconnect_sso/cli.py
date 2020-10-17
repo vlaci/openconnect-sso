@@ -59,6 +59,12 @@ def create_argparser():
     )
 
     auth_settings.add_argument(
+        "--on-disconnect",
+        help="Command to run when disconnecting from VPN server",
+        default="",
+    )
+
+    auth_settings.add_argument(
         "--authenticate",
         help="Authenticate only, and output the information needed to make the connection. Output formatting choices: {%(choices)s}",
         choices=["shell", "json"],
