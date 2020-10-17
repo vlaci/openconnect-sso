@@ -68,7 +68,7 @@ class Authenticator:
 
     async def _authenticate_in_browser(self, auth_request_response, display_mode):
         return await authenticate_in_browser(
-            auth_request_response, self.credentials, display_mode
+            self.proxy, auth_request_response, self.credentials, display_mode
         )
 
     def _complete_authentication(self, auth_request_response, sso_token):
