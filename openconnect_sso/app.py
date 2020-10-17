@@ -5,6 +5,7 @@ import logging
 import os
 import shlex
 import signal
+import subprocess
 from pathlib import Path
 
 import structlog
@@ -25,20 +26,57 @@ logger = structlog.get_logger()
 def run(args):
     configure_logger(logging.getLogger(), args.log_level)
 
+    cfg = config.load()
+
     try:
         if os.name == "nt":
             asyncio.set_event_loop(asyncio.ProactorEventLoop())
-        return asyncio.get_event_loop().run_until_complete(_run(args))
+        auth_response, selected_profile = asyncio.get_event_loop().run_until_complete(
+            _run(args, cfg)
+        )
     except KeyboardInterrupt:
         logger.warn("CTRL-C pressed, exiting")
+        return 130
+    except ValueError as e:
+        msg, retval = e.args
+        logger.error(msg)
+        return retval
     except Terminated:
         logger.warn("Browser window terminated, exiting")
+        return 2
     except AuthResponseError as exc:
         logger.error(
             f'Required attributes not found in response ("{exc}", does this endpoint do SSO?), exiting'
         )
+        return 3
     except HTTPError as exc:
         logger.error(f"Request error: {exc}")
+        return 4
+
+    config.save(cfg)
+
+    if args.authenticate:
+        logger.warn("Exiting after login, as requested")
+        details = {
+            "host": selected_profile.vpn_url,
+            "cookie": auth_response.session_token,
+            "fingerprint": auth_response.server_cert_hash,
+        }
+        if args.authenticate == "json":
+            print(json.dumps(details, indent=4))
+        elif args.authenticate == "shell":
+            print(
+                "\n".join(f"{k.upper()}={shlex.quote(v)}" for k, v in details.items())
+            )
+        return 0
+
+    try:
+        return run_openconnect(
+            auth_response, selected_profile, args.proxy, args.openconnect_args
+        )
+    except KeyboardInterrupt:
+        logger.warn("CTRL-C pressed, exiting")
+        return 0
 
 
 def configure_logger(logger, level):
@@ -62,9 +100,7 @@ def configure_logger(logger, level):
     logger.setLevel(level)
 
 
-async def _run(args):
-    cfg = config.load()
-
+async def _run(args, cfg):
     credentials = None
     if cfg.credentials:
         credentials = cfg.credentials
@@ -78,49 +114,29 @@ async def _run(args):
     elif args.use_profile_selector or args.profile_path:
         profiles = get_profiles(Path(args.profile_path))
         if not profiles:
-            logger.error("No profile found")
-            return 17
+            raise ValueError("No profile found", 17)
 
         selected_profile = await select_profile(profiles)
         if not selected_profile:
-            logger.error("No profile selected")
-            return 18
+            raise ValueError("No profile selected", 18)
     elif args.server:
         selected_profile = config.HostProfile(
             args.server, args.usergroup, args.authgroup
         )
     else:
         raise ValueError(
-            "Cannot determine server address. Invalid arguments specified."
+            "Cannot determine server address. Invalid arguments specified.", 19
         )
 
     cfg.default_profile = selected_profile
-
-    config.save(cfg)
 
     display_mode = config.DisplayMode[args.browser_display_mode.upper()]
 
     auth_response = await authenticate_to(
         selected_profile, args.proxy, credentials, display_mode
     )
-    if args.authenticate:
-        logger.warn("Exiting after login, as requested")
-        details = {
-            "host": selected_profile.vpn_url,
-            "cookie": auth_response.session_token,
-            "fingerprint": auth_response.server_cert_hash,
-        }
-        if args.authenticate == "json":
-            print(json.dumps(details, indent=4))
-        elif args.authenticate == "shell":
-            print(
-                "\n".join(f"{k.upper()}={shlex.quote(v)}" for k, v in details.items())
-            )
-        return 0
 
-    return await run_openconnect(
-        auth_response, selected_profile, args.proxy, args.openconnect_args
-    )
+    return auth_response, selected_profile
 
 
 async def select_profile(profile_list):
@@ -147,7 +163,7 @@ def authenticate_to(host, proxy, credentials, display_mode):
     return Authenticator(host, proxy, credentials).authenticate(display_mode)
 
 
-async def run_openconnect(auth_info, host, proxy, args):
+def run_openconnect(auth_info, host, proxy, args):
     command_line = [
         "sudo",
         "openconnect",
@@ -162,5 +178,4 @@ async def run_openconnect(auth_info, host, proxy, args):
         command_line.extend(["--proxy", proxy])
 
     logger.debug("Starting OpenConnect", command_line=command_line)
-    proc = await asyncio.create_subprocess_exec(*command_line)
-    await proc.wait()
+    return subprocess.run(command_line).returncode
