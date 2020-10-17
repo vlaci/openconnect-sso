@@ -77,6 +77,8 @@ def run(args):
     except KeyboardInterrupt:
         logger.warn("CTRL-C pressed, exiting")
         return 0
+    finally:
+        handle_disconnect(cfg.on_disconnect)
 
 
 def configure_logger(logger, level):
@@ -136,6 +138,9 @@ async def _run(args, cfg):
         selected_profile, args.proxy, credentials, display_mode
     )
 
+    if args.on_disconnect and not cfg.on_disconnect:
+        cfg.on_disconnect = args.on_disconnect
+
     return auth_response, selected_profile
 
 
@@ -179,3 +184,9 @@ def run_openconnect(auth_info, host, proxy, args):
 
     logger.debug("Starting OpenConnect", command_line=command_line)
     return subprocess.run(command_line).returncode
+
+
+def handle_disconnect(command):
+    if command:
+        logger.info("Running command on disconnect", command_line=command)
+        return subprocess.run(command, timeout=5, shell=True).returncode
