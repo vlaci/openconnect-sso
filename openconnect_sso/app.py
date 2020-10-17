@@ -25,7 +25,7 @@ def run(args):
     configure_logger(logging.getLogger(), args.log_level)
 
     try:
-        return asyncio.get_event_loop().run_until_complete(_run(args))
+        return asyncio.run(_run(args))
     except KeyboardInterrupt:
         logger.warn("CTRL-C pressed, exiting")
     except Terminated:
@@ -148,13 +148,17 @@ async def run_openconnect(auth_info, host, args):
     ]
 
     logger.debug("Starting OpenConnect", command_line=command_line)
-    proc = await asyncio.create_subprocess_exec(
-        *command_line,
-        host.vpn_url,
-        stdin=asyncio.subprocess.PIPE,
-        stdout=None,
-        stderr=None,
-    )
-    proc.stdin.write(f"{auth_info.session_token}\n".encode())
-    await proc.stdin.drain()
-    await proc.wait()
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            *command_line,
+            host.vpn_url,
+            stdin=asyncio.subprocess.PIPE,
+            stdout=None,
+            stderr=None,
+        )
+        proc.stdin.write(f"{auth_info.session_token}\n".encode())
+        await proc.stdin.drain()
+        return await proc.wait()
+    finally:
+        await proc.wait()
+

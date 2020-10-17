@@ -20,7 +20,7 @@ classifiers = [
 openconnect-sso = "openconnect_sso.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 attrs = ">=18.2"
 colorama = "^0.4"
 importlib-metadata = { version = "^1.4.0", python = "<3.8" }
@@ -51,7 +51,7 @@ reno = "^2.11"
 setuptools-scm = { version ="^3.4", extras = ["toml"] }
 
 [tool.black]
-target-version = ['py36', 'py37', 'py38']
+target-version = ['py37', 'py38']
 
 [build-system]
 requires = ["poetry>=0.12"]
