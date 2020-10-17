@@ -115,6 +115,7 @@ class Config(ConfigNode):
             n: [AutoFillRule.from_dict(r) for r in rule] for n, rule in rules.items()
         },
     )
+    on_disconnect = attr.ib(converter=str, default="")
 
 
 class DisplayMode(enum.Enum):

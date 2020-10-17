@@ -80,6 +80,12 @@ def create_argparser():
     )
 
     parser.add_argument(
+        "--on-disconnect",
+        help="Command to run when disconnecting from VPN server",
+        default="",
+    )
+
+    parser.add_argument(
         "-V", "--version", action="version", version=f"%(prog)s {__version__}"
     )
 
