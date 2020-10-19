@@ -5,7 +5,14 @@
 }:
 
 let
-  callPackage = pkgs.qt5.callPackage;
+  qtLibsFor = with pkgs.lib; dep:
+    let
+      qtbase = head (filter (d: getName d.name == "qtbase") dep.nativeBuildInputs);
+      version = splitVersion qtbase.version;
+      majorMinor = concatStrings (take 2 version);
+    in pkgs."libsForQt${majorMinor}";
+
+  inherit (qtLibsFor pkgs.python3Packages.pyqt5) callPackage;
   pythonPackages = pkgs.python3Packages;
 
   openconnect-sso = callPackage ./openconnect-sso.nix { inherit (pkgs) python3Packages; };
