@@ -10,10 +10,11 @@ logger = structlog.get_logger()
 
 
 class Authenticator:
-    def __init__(self, host, credentials=None):
+    def __init__(self, host, proxy=None, credentials=None):
         self.host = host
+        self.proxy = proxy
         self.credentials = credentials
-        self.session = create_http_session()
+        self.session = create_http_session(proxy)
 
     async def authenticate(self, display_mode):
         self._detect_authentication_target_url()
@@ -67,7 +68,7 @@ class Authenticator:
 
     async def _authenticate_in_browser(self, auth_request_response, display_mode):
         return await authenticate_in_browser(
-            auth_request_response, self.credentials, display_mode
+            self.proxy, auth_request_response, self.credentials, display_mode
         )
 
     def _complete_authentication(self, auth_request_response, sso_token):
@@ -88,8 +89,9 @@ class AuthResponseError(AuthenticationError):
     pass
 
 
-def create_http_session():
+def create_http_session(proxy):
     session = requests.Session()
+    session.proxies = {"http": proxy, "https": proxy}
     session.headers.update(
         {
             "User-Agent": "AnyConnect Linux_64 4.7.00136",

@@ -12,7 +12,7 @@ async def test_browser_context_manager_should_work_in_empty_context_manager():
 
 @pytest.mark.asyncio
 async def test_browser_reports_loaded_url(httpserver):
-    async with Browser(DisplayMode.HIDDEN) as browser:
+    async with Browser(display_mode=DisplayMode.HIDDEN) as browser:
         auth_url = httpserver.url_for("/authenticate")
 
         await browser.authenticate_at(auth_url, credentials=None)
@@ -24,7 +24,7 @@ async def test_browser_reports_loaded_url(httpserver):
 
 @pytest.mark.asyncio
 async def test_browser_cookies_accessible(httpserver):
-    async with Browser(DisplayMode.HIDDEN) as browser:
+    async with Browser(display_mode=DisplayMode.HIDDEN) as browser:
         httpserver.expect_request("/authenticate").respond_with_data(
             "<html><body>Hello</body></html>",
             headers={"Set-Cookie": "cookie-name=cookie-value"},

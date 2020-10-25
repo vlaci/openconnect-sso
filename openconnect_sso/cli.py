@@ -32,6 +32,8 @@ def create_argparser():
         default=False,
     )
 
+    server_settings.add_argument("--proxy", help="Use a proxy server")
+
     server_settings.add_argument(
         "-s",
         "--server",
@@ -75,6 +77,12 @@ def create_argparser():
         metavar="DISPLAY-MODE",
         nargs="?",
         default="shown",
+    )
+
+    parser.add_argument(
+        "--on-disconnect",
+        help="Command to run when disconnecting from VPN server",
+        default="",
     )
 
     parser.add_argument(

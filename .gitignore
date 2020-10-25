@@ -106,3 +106,6 @@ venv.bak/
 
 # vscode
 .vscode/
+
+# pre-commit
+.pre-commit-cache

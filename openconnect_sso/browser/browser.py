@@ -9,7 +9,7 @@ logger = structlog.get_logger()
 
 
 class Browser:
-    def __init__(self, display_mode=DisplayMode.SHOWN):
+    def __init__(self, proxy=None, display_mode=DisplayMode.SHOWN):
         self.browser_proc = None
         self.updater = None
         self.running = False
@@ -17,10 +17,11 @@ class Browser:
         self.url = None
         self.cookies = {}
         self.loop = asyncio.get_event_loop()
+        self.proxy = proxy
         self.display_mode = display_mode
 
     async def spawn(self):
-        self.browser_proc = web.Process(self.display_mode)
+        self.browser_proc = web.Process(self.proxy, self.display_mode)
         self.browser_proc.start()
         self.running = True
 

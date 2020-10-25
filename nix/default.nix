@@ -1,17 +1,23 @@
 { sources ? import ./sources.nix
-, pkgs ? import sources.nixpkgs {
+, pkgs ? import <nixpkgs> {
     overlays = [ (import "${sources.poetry2nix}/overlay.nix") ];
   }
 }:
 
 let
-  callPackage = pkgs.qt5.callPackage;
+  qtLibsFor = with pkgs.lib; dep:
+    let
+      qtbase = head (filter (d: getName d.name == "qtbase") dep.nativeBuildInputs);
+      version = splitVersion qtbase.version;
+      majorMinor = concatStrings (take 2 version);
+    in pkgs."libsForQt${majorMinor}";
+
+  inherit (qtLibsFor pkgs.python3Packages.pyqt5) callPackage;
   pythonPackages = pkgs.python3Packages;
 
   openconnect-sso = callPackage ./openconnect-sso.nix { inherit (pkgs) python3Packages; };
 
   shell = pkgs.mkShell {
-    inputsFrom = [ openconnect-sso ];
     buildInputs = with pkgs; [
       # For Makefile
       gawk
@@ -20,13 +26,17 @@ let
       which
       niv # Dependency manager for Nix expressions
       nixpkgs-fmt # To format Nix source files
-      pandoc # To convert reno release notes to markdown
       poetry # Dependency manager for Python
-      reno # Manage release nots
     ] ++ (
       with pythonPackages; [
         pre-commit # To check coding style during commit
       ]
+    ) ++ (
+      # only install those dependencies in the shell env which are meant to be
+      # visible in the environment after installation of the actual package.
+      # Specifying `inputsFrom = [ openconnect-sso ]` introduces weird errors as
+      # it brings transitive dependencies into scope.
+      openconnect-sso.propagatedBuildInputs
     );
     shellHook = ''
       # Python wheels are ZIP files which cannot contain timestamps prior to

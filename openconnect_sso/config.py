@@ -35,15 +35,14 @@ def load():
 def save(config):
     path = xdg.BaseDirectory.save_config_path(APP_NAME)
     config_path = Path(path) / "config.toml"
-    config_path.touch()
-
-    with config_path.open("w") as config_file:
-        try:
+    try:
+        config_path.touch()
+        with config_path.open("w") as config_file:
             toml.dump(config.as_dict(), config_file)
-        except Exception:
-            logger.error(
-                "Could not save configuration file", path=config_path, exc_info=True
-            )
+    except Exception:
+        logger.error(
+            "Could not save configuration file", path=config_path, exc_info=True
+        )
 
 
 @attr.s
@@ -116,6 +115,7 @@ class Config(ConfigNode):
             n: [AutoFillRule.from_dict(r) for r in rule] for n, rule in rules.items()
         },
     )
+    on_disconnect = attr.ib(converter=str, default="")
 
 
 class DisplayMode(enum.Enum):
