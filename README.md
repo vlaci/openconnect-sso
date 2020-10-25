@@ -3,11 +3,13 @@
 Wrapper script for OpenConnect supporting Azure AD (SAMLv2) authentication
 to Cisco SSL-VPNs
 
-## TL; DR
+## Installation
 
 ### Using pip/pipx
 
-This will install `openconect-sso` along with its dependencies including Qt:
+A generic way that works on most 'standard' Linux distributions out of the box.
+The following example shows how to install `openconect-sso` along with its
+dependencies including Qt:
 
 ```shell
 $ pip install --user pipx
@@ -39,7 +41,7 @@ pipx install openconnect-sso
 ```
 
 Of course you can also install via `pip` instead of `pipx` if you'd like to
-install systemwide or a virtualenv of your choice.
+install system-wide or a virtualenv of your choice.
 
 ### On Arch Linux
 
@@ -90,12 +92,12 @@ in
 }
 ```
 
-### Windows
+### Windows *(EXPERIMENTAL)*
 
-Install with pip/pipx and be sure that you have `sudo` and `openconnect` executables
-in your PATH.
+Install with [pip/pipx](#using-pippipx) and be sure that you have `sudo` and `openconnect`
+executable commands in your PATH.
 
-## Configuration
+## Usage
 
 If you want to save credentials and get them automatically
 injected in the web browser:
@@ -157,4 +159,4 @@ $ result/bin/openconnect-sso --help
 
 Alternatively you may just [get Poetry](https://python-poetry.org/docs/) and
 start developing by using the included `Makefile`. Type `make help` to see the
-possibble make targets.
+possible make targets.
