@@ -1,40 +1,40 @@
 [[package]]
-category = "dev"
-description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 name = "appdirs"
+version = "1.4.4"
+description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
+category = "dev"
 optional = false
 python-versions = "*"
-version = "1.4.4"
 
 [[package]]
-category = "dev"
-description = "Atomic file writes."
 name = "atomicwrites"
+version = "1.4.0"
+description = "Atomic file writes."
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.4.0"
 
 [[package]]
-category = "main"
-description = "Classes Without Boilerplate"
 name = "attrs"
+version = "20.2.0"
+description = "Classes Without Boilerplate"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "20.2.0"
 
 [package.extras]
-dev = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "sphinx", "sphinx-rtd-theme", "pre-commit"]
+dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "sphinx", "sphinx-rtd-theme", "pre-commit"]
 docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
-tests = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
-tests_no_zope = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six"]
+tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
+tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six"]
 
 [[package]]
-category = "dev"
-description = "The uncompromising code formatter."
 name = "black"
+version = "19.3b0"
+description = "The uncompromising code formatter."
+category = "dev"
 optional = false
 python-versions = ">=3.6"
-version = "19.3b0"
 
 [package.dependencies]
 appdirs = "*"
@@ -46,79 +46,77 @@ toml = ">=0.9.4"
 d = ["aiohttp (>=3.3.2)", "aiohttp-cors"]
 
 [[package]]
-category = "main"
-description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
+version = "2020.6.20"
+description = "Python package for providing Mozilla's CA Bundle."
+category = "main"
 optional = false
 python-versions = "*"
-version = "2020.6.20"
 
 [[package]]
-category = "main"
-description = "Foreign Function Interface for Python calling C code."
-marker = "sys_platform == \"linux\""
 name = "cffi"
+version = "1.14.3"
+description = "Foreign Function Interface for Python calling C code."
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.14.3"
 
 [package.dependencies]
 pycparser = "*"
 
 [[package]]
-category = "main"
-description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
+version = "3.0.4"
+description = "Universal encoding detector for Python 2 and 3"
+category = "main"
 optional = false
 python-versions = "*"
-version = "3.0.4"
 
 [[package]]
-category = "dev"
-description = "Composable command line interface toolkit"
 name = "click"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "7.1.2"
-
-[[package]]
-category = "main"
-description = "Cross-platform colored terminal text."
-name = "colorama"
+description = "Composable command line interface toolkit"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "0.4.4"
 
 [[package]]
-category = "dev"
-description = "Code coverage measurement for Python"
+name = "colorama"
+version = "0.4.4"
+description = "Cross-platform colored terminal text."
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[[package]]
 name = "coverage"
+version = "5.3"
+description = "Code coverage measurement for Python"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
-version = "5.3"
 
 [package.extras]
 toml = ["toml"]
 
 [[package]]
-category = "dev"
-description = "enable python coverage for subprocesses"
 name = "coverage-enable-subprocess"
+version = "1.0"
+description = "enable python coverage for subprocesses"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "1.0"
 
 [package.dependencies]
 coverage = "*"
 
 [[package]]
-category = "main"
-description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
-marker = "sys_platform == \"linux\""
 name = "cryptography"
+version = "3.1.1"
+description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
+category = "main"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
-version = "3.1.1"
 
 [package.dependencies]
 cffi = ">=1.8,<1.11.3 || >1.11.3"
@@ -132,21 +130,20 @@ ssh = ["bcrypt (>=3.1.5)"]
 test = ["pytest (>=3.6.0,<3.9.0 || >3.9.0,<3.9.1 || >3.9.1,<3.9.2 || >3.9.2)", "pretend", "iso8601", "pytz", "hypothesis (>=1.11.4,<3.79.2 || >3.79.2)"]
 
 [[package]]
-category = "main"
-description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
+version = "2.10"
+description = "Internationalized Domain Names in Applications (IDNA)"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.10"
 
 [[package]]
-category = "main"
-description = "Read metadata from Python packages"
-marker = "python_version < \"3.8\""
 name = "importlib-metadata"
+version = "1.7.0"
+description = "Read metadata from Python packages"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
-version = "1.7.0"
 
 [package.dependencies]
 zipp = ">=0.5"
@@ -156,45 +153,41 @@ docs = ["sphinx", "rst.linker"]
 testing = ["packaging", "pep517", "importlib-resources (>=1.3)"]
 
 [[package]]
-category = "main"
-description = "Low-level, pure Python DBus protocol wrapper."
-marker = "sys_platform == \"linux\""
 name = "jeepney"
+version = "0.4.3"
+description = "Low-level, pure Python DBus protocol wrapper."
+category = "main"
 optional = false
 python-versions = ">=3.5"
-version = "0.4.3"
 
 [package.extras]
 dev = ["testpath"]
 
 [[package]]
-category = "main"
-description = "Store and access your passwords safely."
 name = "keyring"
+version = "21.4.0"
+description = "Store and access your passwords safely."
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "21.4.0"
 
 [package.dependencies]
-SecretStorage = ">=3"
-jeepney = ">=0.4.2"
-pywin32-ctypes = "<0.1.0 || >0.1.0,<0.1.1 || >0.1.1"
-
-[package.dependencies.importlib-metadata]
-python = "<3.8"
-version = "*"
+importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
+jeepney = {version = ">=0.4.2", markers = "sys_platform == \"linux\""}
+pywin32-ctypes = {version = "<0.1.0 || >0.1.0,<0.1.1 || >0.1.1", markers = "sys_platform == \"win32\""}
+SecretStorage = {version = ">=3", markers = "sys_platform == \"linux\""}
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-black (>=0.3.7)", "pytest-cov", "pytest-mypy"]
 
 [[package]]
-category = "main"
-description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
 name = "lxml"
+version = "4.6.1"
+description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, != 3.4.*"
-version = "4.6.1"
 
 [package.extras]
 cssselect = ["cssselect (>=0.7)"]
@@ -203,121 +196,117 @@ htmlsoup = ["beautifulsoup4"]
 source = ["Cython (>=0.29.7)"]
 
 [[package]]
-category = "dev"
-description = "More routines for operating on iterables, beyond itertools"
 name = "more-itertools"
+version = "8.5.0"
+description = "More routines for operating on iterables, beyond itertools"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
-version = "8.5.0"
 
 [[package]]
-category = "dev"
-description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
+version = "0.13.1"
+description = "plugin and hook calling mechanisms for python"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "0.13.1"
 
 [package.dependencies]
-[package.dependencies.importlib-metadata]
-python = "<3.8"
-version = ">=0.12"
+importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
 
 [package.extras]
 dev = ["pre-commit", "tox"]
 
 [[package]]
-category = "main"
-description = "Library for building powerful interactive command lines in Python"
 name = "prompt-toolkit"
+version = "3.0.3"
+description = "Library for building powerful interactive command lines in Python"
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "3.0.3"
 
 [package.dependencies]
 wcwidth = "*"
 
 [[package]]
-category = "dev"
-description = "library with cross-python path, ini-parsing, io, code, log facilities"
 name = "py"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.9.0"
-
-[[package]]
-category = "main"
-description = "C parser in Python"
-marker = "sys_platform == \"linux\""
-name = "pycparser"
+description = "library with cross-python path, ini-parsing, io, code, log facilities"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.20"
 
 [[package]]
+name = "pycparser"
+version = "2.20"
+description = "C parser in Python"
 category = "main"
-description = "Python bindings for the Qt cross platform application toolkit"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
 name = "pyqt5"
+version = "5.15.1"
+description = "Python bindings for the Qt cross platform application toolkit"
+category = "main"
 optional = true
 python-versions = ">=3.5"
-version = "5.15.1"
 
 [package.dependencies]
 PyQt5-sip = ">=12.8,<13"
 
 [[package]]
-category = "main"
-description = "The sip module support for PyQt5"
 name = "pyqt5-sip"
+version = "12.8.1"
+description = "The sip module support for PyQt5"
+category = "main"
 optional = true
 python-versions = ">=3.5"
-version = "12.8.1"
 
 [[package]]
-category = "main"
-description = "Python bindings for the Qt WebEngine framework"
 name = "pyqtwebengine"
+version = "5.15.1"
+description = "Python bindings for the Qt WebEngine framework"
+category = "main"
 optional = true
 python-versions = ">=3.5"
-version = "5.15.1"
 
 [package.dependencies]
 PyQt5 = ">=5.15"
 PyQt5-sip = ">=12.8,<13"
 
 [[package]]
-category = "main"
-description = "A Python SOCKS client module. See https://github.com/Anorov/PySocks for more information."
 name = "pysocks"
+version = "1.7.1"
+description = "A Python SOCKS client module. See https://github.com/Anorov/PySocks for more information."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.7.1"
 
 [[package]]
-category = "dev"
-description = "pytest: simple powerful testing with Python"
 name = "pytest"
+version = "3.10.1"
+description = "pytest: simple powerful testing with Python"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.10.1"
 
 [package.dependencies]
 atomicwrites = ">=1.0"
 attrs = ">=17.4.0"
-colorama = "*"
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
 more-itertools = ">=4.0.0"
 pluggy = ">=0.7"
 py = ">=1.5.0"
-setuptools = "*"
 six = ">=1.10.0"
 
 [[package]]
-category = "dev"
-description = "Pytest support for asyncio."
 name = "pytest-asyncio"
+version = "0.10.0"
+description = "Pytest support for asyncio."
+category = "dev"
 optional = false
 python-versions = ">= 3.5"
-version = "0.10.0"
 
 [package.dependencies]
 pytest = ">=3.0.6"
@@ -326,12 +315,12 @@ pytest = ">=3.0.6"
 testing = ["async-generator (>=1.3)", "coverage", "hypothesis (>=3.64)"]
 
 [[package]]
-category = "dev"
-description = "Pytest plugin for measuring coverage."
 name = "pytest-cov"
+version = "2.9.0"
+description = "Pytest plugin for measuring coverage."
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "2.9.0"
 
 [package.dependencies]
 coverage = ">=4.4"
@@ -341,12 +330,12 @@ pytest = ">=3.6"
 testing = ["fields", "hunter", "process-tests (2.0.2)", "six", "pytest-xdist", "virtualenv"]
 
 [[package]]
-category = "dev"
-description = "pytest-httpserver is a httpserver for pytest"
 name = "pytest-httpserver"
+version = "0.3.6"
+description = "pytest-httpserver is a httpserver for pytest"
+category = "dev"
 optional = false
 python-versions = ">=3.4"
-version = "0.3.6"
 
 [package.dependencies]
 werkzeug = "*"
@@ -356,29 +345,28 @@ dev = ["flake8", "wheel", "rope", "pytest", "pytest-cov", "coverage", "ipdb", "r
 test = ["pytest", "pytest-cov", "coverage", "requests"]
 
 [[package]]
-category = "main"
-description = ""
-marker = "sys_platform == \"win32\""
 name = "pywin32-ctypes"
-optional = false
-python-versions = "*"
 version = "0.2.0"
-
-[[package]]
+description = ""
 category = "main"
-description = "PyXDG contains implementations of freedesktop.org standards in python."
-name = "pyxdg"
 optional = false
 python-versions = "*"
-version = "0.26"
 
 [[package]]
+name = "pyxdg"
+version = "0.26"
+description = "PyXDG contains implementations of freedesktop.org standards in python."
 category = "main"
-description = "Python HTTP for Humans."
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "requests"
+version = "2.24.0"
+description = "Python HTTP for Humans."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "2.24.0"
 
 [package.dependencies]
 certifi = ">=2017.4.17"
@@ -391,49 +379,46 @@ security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)"]
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
 
 [[package]]
-category = "main"
-description = "Python bindings to FreeDesktop.org Secret Service API"
-marker = "sys_platform == \"linux\""
 name = "secretstorage"
+version = "3.1.2"
+description = "Python bindings to FreeDesktop.org Secret Service API"
+category = "main"
 optional = false
 python-versions = ">=3.5"
-version = "3.1.2"
 
 [package.dependencies]
 cryptography = "*"
 jeepney = ">=0.4.2"
 
 [[package]]
-category = "dev"
-description = "the blessed package to manage your versions by scm tags"
 name = "setuptools-scm"
+version = "3.5.0"
+description = "the blessed package to manage your versions by scm tags"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.5.0"
 
 [package.dependencies]
-[package.dependencies.toml]
-optional = true
-version = "*"
+toml = {version = "*", optional = true, markers = "extra == \"toml\""}
 
 [package.extras]
 toml = ["toml"]
 
 [[package]]
-category = "main"
-description = "Python 2 and 3 compatibility utilities"
 name = "six"
+version = "1.15.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
-version = "1.15.0"
 
 [[package]]
-category = "main"
-description = "Structured Logging for Python"
 name = "structlog"
+version = "20.1.0"
+description = "Structured Logging for Python"
+category = "main"
 optional = false
 python-versions = "*"
-version = "20.1.0"
 
 [package.dependencies]
 six = "*"
@@ -445,20 +430,20 @@ docs = ["sphinx", "twisted"]
 tests = ["coverage", "freezegun (>=0.2.8)", "pretend", "pytest (>=3.3.0)", "simplejson", "python-rapidjson", "pytest-asyncio"]
 
 [[package]]
-category = "main"
-description = "Python Library for Tom's Obvious, Minimal Language"
 name = "toml"
+version = "0.10.1"
+description = "Python Library for Tom's Obvious, Minimal Language"
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.10.1"
 
 [[package]]
-category = "main"
-description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
+version = "1.25.11"
+description = "HTTP library with thread-safe connection pooling, file post, and more."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
-version = "1.25.11"
 
 [package.extras]
 brotli = ["brotlipy (>=0.6.0)"]
@@ -466,33 +451,32 @@ secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "cer
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
 [[package]]
-category = "main"
-description = "Measures the displayed width of unicode strings in a terminal"
 name = "wcwidth"
+version = "0.2.5"
+description = "Measures the displayed width of unicode strings in a terminal"
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.2.5"
 
 [[package]]
-category = "dev"
-description = "The comprehensive WSGI web application library."
 name = "werkzeug"
+version = "1.0.1"
+description = "The comprehensive WSGI web application library."
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "1.0.1"
 
 [package.extras]
 dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-themes", "sphinx-issues"]
 watchdog = ["watchdog"]
 
 [[package]]
-category = "main"
-description = "Backport of pathlib-compatible object wrapper for zip files"
-marker = "python_version < \"3.8\""
 name = "zipp"
+version = "3.4.0"
+description = "Backport of pathlib-compatible object wrapper for zip files"
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "3.3.2"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
@@ -502,8 +486,9 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 full = ["PyQt5", "PyQtWebEngine"]
 
 [metadata]
-content-hash = "dfd4260ab5fc061ca1191905577fffbe0cec86f414e0ac2cd9709abc20252325"
+lock-version = "1.1"
 python-versions = "^3.6"
+content-hash = "dfd4260ab5fc061ca1191905577fffbe0cec86f414e0ac2cd9709abc20252325"
 
 [metadata.files]
 appdirs = [
@@ -822,6 +807,6 @@ werkzeug = [
     {file = "Werkzeug-1.0.1.tar.gz", hash = "sha256:6c80b1e5ad3665290ea39320b91e1be1e0d5f60652b964a3070216de83d2e47c"},
 ]
 zipp = [
-    {file = "zipp-3.3.2-py3-none-any.whl", hash = "sha256:50a4ef266c31c9409627b46012e206382eb8d23f46fbd358065a8335cfbf7d8f"},
-    {file = "zipp-3.3.2.tar.gz", hash = "sha256:adf8f2ed8f614ced567d849cae9d183cef6cfd27c77a5cae7a28029be0c2b7a7"},
+    {file = "zipp-3.4.0-py3-none-any.whl", hash = "sha256:102c24ef8f171fd729d46599845e95c7ab894a4cf45f5de11a44cc7444fb1108"},
+    {file = "zipp-3.4.0.tar.gz", hash = "sha256:ed5eee1974372595f9e416cc7bbeeb12335201d8081ca8a0743c954d4446e5cb"},
 ]
