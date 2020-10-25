@@ -111,23 +111,8 @@ test:  ## Run tests
 ## Release
 VERSION = $(shell .venv/bin/python -c 'import openconnect_sso; print(f"v{openconnect_sso.__version__}")')
 
-.PHONY: changelog
-changelog:  ## Shows the project's changelog
-	trap "rm -f .reno_err" EXIT
-	{ reno report $(if $(ONLY_CURRENT),\
-		--earliest-version=$$(git describe --abbrev=0 --tags)
-	) 2> .reno_err || cat .reno_err
-	} | pandoc --from rst --to $(FORMAT) $(if $(OUTPUT_FILE),-o $(OUTPUT_FILE))
-changelog: FORMAT ?= gfm  ## Output format for changelog
-changelog: ONLY_CURRENT ?=  ## Log only current (and unreleased) versions changes
-changelog: OUTPUT_FILE ?=  ## Write changelog to file instead of displaying
-
-.INTERMEDIATE: CHANGELOG.md
-CHANGELOG.md: $(wildcard releasenotes/**/*)
-	$(MAKE) changelog OUTPUT_FILE=CHANGELOG.md
-
 .PHONY: dist
-dist: CHANGELOG.md  ## Build packages from whatever state the repository is
+dist:  ## Build packages from whatever state the repository is
 	poetry build
 	cp CHANGELOG.md dist/CHANGELOG-$(VERSION).md
 

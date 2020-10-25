@@ -26,9 +26,7 @@ let
       which
       niv # Dependency manager for Nix expressions
       nixpkgs-fmt # To format Nix source files
-      pandoc # To convert reno release notes to markdown
       poetry # Dependency manager for Python
-      reno # Manage release nots
     ] ++ (
       with pythonPackages; [
         pre-commit # To check coding style during commit

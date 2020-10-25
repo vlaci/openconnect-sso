@@ -1,0 +1,165 @@
+# Changelog
+
+## v0.5.0
+
+### New Features
+
+- Adding `--authgroup` argument from OpenConnect
+
+  Some VPN endpoints require users to post a valid authgroup (in
+  OpenConnect lingua) as part of the `group-access` xml node. Up until
+  now it was only possilbe to override the authgroup from the
+  configuration or from an AnyConnect XML profile.
+
+### Other Notes
+
+- Removed max version constraint from `attrs` and update dependencies.
+  It works with a more recent version after the `convert=` deprecation
+  issues had been resolved for the previous upgrade.
+
+## v0.4.0
+
+### Prelude
+
+It is now possible to install `openconnect-sso` using a systemwide
+installation of `Qt` by declaring dependencies to `PyQt5` and
+`PyQtWebEngine` optional.
+
+### New Features
+
+- `--authenticate [json|shell]` command line argument
+  Exits after authentication and displays the authentication
+  information needed to initiate a connection. When the `shell` output
+  format is used the output is formatted the same way as `openconnect`
+  formats its output when the same argument is used. When `json`
+  format is used, the same information is displayed in json format.
+
+  Kudos to @rschmied for the original pull request.
+
+- `--version/-V` command line argument
+  Displays the version of `openconnect-sso`
+
+- `--browser-display-mode [shown|hidden]` command line argument
+  If `hidden` is specified the browser login window is not displayed.
+  Keep in mind thatin that case there is no way to manually enter
+  credentials so make sure that you can login with saved settings
+  without interacting with the webpage before selecting this option.
+
+### Upgrade Notes
+
+- Use the `--authenticate` command line argument instead
+  of`--auth-only`. The latter argument has been removed from this
+  version of `openconnect-sso`.
+
+- As it is now possible to choose between a bundled or preinstalled
+  version of Qt, that means that `PyQt5` is no longer a required
+  dependency. To keep installing `openconnect-sso` with all its
+  dependencies:
+
+      pip install --user --upgrade "openconnect-sso[full]"
+
+  To use the systemwide installation of `PyQt5` and `PyQtWebEngine`
+  install them via your distribution's package manager:
+
+      apt install python-pyqt5 python3-pyqt5.qtwebengine
+
+  Then install `openconnect-sso`:
+
+      pip install --user --upgrade openconnect-sso
+
+### Other Notes
+
+- Dependencies updated to newer versions
+
+- The browser window runs its separate process in order to not let
+  `PyQt` pollute the root process and make the core able to still use
+  `asyncio` without any hassle.
+
+  Unfortunately spawning a separate Python instance is not so trivial
+  as it won't inherit all state from the parent process. It makes the
+  application harder to integrate in more exotic deployments such as
+  in `NixOS`.
+
+  End-users should not observe any changes in behavior.
+
+## v0.3.9
+
+### Bug Fixes
+
+- \#8 Show error returned by VPN endpoint when authentication starts
+
+## v0.3.8
+
+### Bug Fixes
+
+- `--server` command line option only had an effect when
+  `openconnect-sso` is started for the first time. Subsequent
+  executions always loaded the server setting from the saved
+  configuration.
+
+## v0.3.7
+
+### New Features
+
+- Support redirection when e.g. VPN endpoint is behind a load-balancer
+
+## v0.3.6
+
+### Bug Fixes
+
+- Browser window was not shown
+- Pasword was logged in debug mode
+
+## v0.3.5
+
+### Bug Fixes
+
+- Add a version constraint to `attrs` package because version `19.2.0`
+  removed support for the `convert` constructor argument.
+
+## v0.3.4
+
+### Prelude
+
+It is strongly suggested to remove the `[auto_fill_rules]` section from
+the configuration file or delete the entire file located at
+`$XDG_CONFIG_HOME/openconnect-sso/config.toml` (most probably
+`~/.config/openconnect-sso/config.toml`). The fix of \#4 involves an
+update of the auto-fill rules but unfortulately they are persisted when
+the application is first started. Removing them from the configuration
+forces the updated set of rules to be written in the configuration.
+
+### Bug Fixes
+
+- The embedded browser will now stop and waits for user input when the
+  previously stored credentials are invalid. This still not the proper
+  solution as saved credentials are not upd# Changelog
+
+## v0.5.0
+
+### New Features
+
+- Adding `--authgroup` argument from OpenConnect
+
+  Some VPN endpoints require users to post a valid authgroup (in
+  OpenConnect lingua) as part of the `group-access` xml node. Up until
+  now it was only possilbe to override the authgroup from the
+  configuration or from an AnyConnect XML profile.
+
+### Other Notes
+
+- Removed max version constraint from `attrs` and update dependencies.
+  It works with a more recent version after the `convert=` deprecation
+  issues had been resolved for the previous upgrade.
+
+## v0.4.0
+
+### Prelude
+
+It is now possible to install `openconnect-sso` using a systemwide
+installation of `Qt` by declaring dependencies to `PyQt5` and
+`PyQtWebEngine` optional.
+
+### New Features
+
+- `--authenticate [json|shell]` command line argument

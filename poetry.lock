@@ -132,24 +132,6 @@ ssh = ["bcrypt (>=3.1.5)"]
 test = ["pytest (>=3.6.0,<3.9.0 || >3.9.0,<3.9.1 || >3.9.1,<3.9.2 || >3.9.2)", "pretend", "iso8601", "pytz", "hypothesis (>=1.11.4,<3.79.2 || >3.79.2)"]
 
 [[package]]
-category = "dev"
-description = "Python Git Library"
-name = "dulwich"
-optional = false
-python-versions = ">=3.5"
-version = "0.20.6"
-
-[package.dependencies]
-certifi = "*"
-urllib3 = ">=1.24.1"
-
-[package.extras]
-fastimport = ["fastimport"]
-https = ["urllib3 (>=1.24.1)"]
-pgp = ["gpg"]
-watch = ["pyinotify"]
-
-[[package]]
 category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
@@ -227,14 +209,6 @@ name = "more-itertools"
 optional = false
 python-versions = ">=3.5"
 version = "8.5.0"
-
-[[package]]
-category = "dev"
-description = "Python Build Reasonableness"
-name = "pbr"
-optional = false
-python-versions = ">=2.6"
-version = "5.5.1"
 
 [[package]]
 category = "dev"
@@ -399,32 +373,6 @@ python-versions = "*"
 version = "0.26"
 
 [[package]]
-category = "dev"
-description = "YAML parser and emitter for Python"
-name = "pyyaml"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "5.3.1"
-
-[[package]]
-category = "dev"
-description = "RElease NOtes manager"
-name = "reno"
-optional = false
-python-versions = "*"
-version = "2.11.3"
-
-[package.dependencies]
-PyYAML = ">=3.10"
-dulwich = ">=0.15.0"
-pbr = "*"
-six = ">=1.9.0"
-
-[package.extras]
-sphinx = ["sphinx (>=1.6.1)", "docutils (>=0.11)"]
-test = ["hacking (>=0.12.0,<0.13.0 || >0.13.0,<0.14)", "mock (>=1.2)", "coverage (>=4.0,<4.4 || >4.4)", "python-subunit (>=0.0.18)", "openstackdocstheme (>=1.11.0)", "stestr (>=2.0.0)", "testscenarios (>=0.4)", "testtools (>=1.4.0)"]
-
-[[package]]
 category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
@@ -554,7 +502,7 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 full = ["PyQt5", "PyQtWebEngine"]
 
 [metadata]
-content-hash = "78cb0f2c9700f871a6d162ca24e9a4956f9c05b053c4d2df171f5f0ef4683a86"
+content-hash = "dfd4260ab5fc061ca1191905577fffbe0cec86f414e0ac2cd9709abc20252325"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -692,21 +640,6 @@ cryptography = [
     {file = "cryptography-3.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:99d4984aabd4c7182050bca76176ce2dbc9fa9748afe583a7865c12954d714ba"},
     {file = "cryptography-3.1.1.tar.gz", hash = "sha256:9d9fc6a16357965d282dd4ab6531013935425d0dc4950df2e0cf2a1b1ac1017d"},
 ]
-dulwich = [
-    {file = "dulwich-0.20.6-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:bea6e6caffc6c73bfd1647714c5715ab96ac49deb8beb8b67511529afa25685a"},
-    {file = "dulwich-0.20.6-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:e5871b86a079e9e290f52ab14559cea1b694a0b8ed2b9ebb898f6ced7f14a406"},
-    {file = "dulwich-0.20.6-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:1ccd55e38fa9f169290f93e027ab4508202f5bdd6ef534facac4edd3f6903f0d"},
-    {file = "dulwich-0.20.6-cp36-cp36m-win_amd64.whl", hash = "sha256:7e7b5dea5178b6493fdb83adccbe81de9ddff55f79880185ed594c0e3a97209b"},
-    {file = "dulwich-0.20.6-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:304f52b10c49c3a6ddfbd73e2e93d8e979350225cfba9688e51110e74fa2f718"},
-    {file = "dulwich-0.20.6-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:2f4aebc54ed2d37dcee737024421452375570a422eb682232e676aa7ebc9cb4b"},
-    {file = "dulwich-0.20.6-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:4fee359928c59b53af153a582a7ed7595259a5a825df400301a29e17fd78dfd3"},
-    {file = "dulwich-0.20.6-cp37-cp37m-win_amd64.whl", hash = "sha256:8f7a7f973be2beedfb10dd8d3eb6bdf9ec466c72ad555704897cbd6357fe5021"},
-    {file = "dulwich-0.20.6-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:2452a0379cc7bbbd7ab893ec104d18039f1ea98b0d6be6bca5646e5cf29e0ae9"},
-    {file = "dulwich-0.20.6-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:49e747c72d9099e873bf6196260346d5996c3f28af788294d47a8accdc524de7"},
-    {file = "dulwich-0.20.6-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:50ef300a9fa4efd9f85009c2bd8b515266ec1529400f8834f85c04fa9f09b2c0"},
-    {file = "dulwich-0.20.6-cp38-cp38-win_amd64.whl", hash = "sha256:5348310f21b2a23847342ce464461499b6652483fa42de03714d0f6421a99698"},
-    {file = "dulwich-0.20.6.tar.gz", hash = "sha256:e593f514b8ac740b4ceeb047745b4719bfc9f334904245c6edcb3a9d002f577b"},
-]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
     {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
@@ -764,10 +697,6 @@ lxml = [
 more-itertools = [
     {file = "more-itertools-8.5.0.tar.gz", hash = "sha256:6f83822ae94818eae2612063a5101a7311e68ae8002005b5e05f03fd74a86a20"},
     {file = "more_itertools-8.5.0-py3-none-any.whl", hash = "sha256:9b30f12df9393f0d28af9210ff8efe48d10c94f73e5daf886f10c4b0b0b4f03c"},
-]
-pbr = [
-    {file = "pbr-5.5.1-py2.py3-none-any.whl", hash = "sha256:b236cde0ac9a6aedd5e3c34517b423cd4fd97ef723849da6b0d2231142d89c00"},
-    {file = "pbr-5.5.1.tar.gz", hash = "sha256:5fad80b613c402d5b7df7bd84812548b2a61e9977387a80a5fc5c396492b13c9"},
 ]
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
@@ -850,23 +779,6 @@ pywin32-ctypes = [
 pyxdg = [
     {file = "pyxdg-0.26-py2.py3-none-any.whl", hash = "sha256:1948ff8e2db02156c0cccd2529b43c0cff56ebaa71f5f021bbd755bc1419190e"},
     {file = "pyxdg-0.26.tar.gz", hash = "sha256:fe2928d3f532ed32b39c32a482b54136fe766d19936afc96c8f00645f9da1a06"},
-]
-pyyaml = [
-    {file = "PyYAML-5.3.1-cp27-cp27m-win32.whl", hash = "sha256:74809a57b329d6cc0fdccee6318f44b9b8649961fa73144a98735b0aaf029f1f"},
-    {file = "PyYAML-5.3.1-cp27-cp27m-win_amd64.whl", hash = "sha256:240097ff019d7c70a4922b6869d8a86407758333f02203e0fc6ff79c5dcede76"},
-    {file = "PyYAML-5.3.1-cp35-cp35m-win32.whl", hash = "sha256:4f4b913ca1a7319b33cfb1369e91e50354d6f07a135f3b901aca02aa95940bd2"},
-    {file = "PyYAML-5.3.1-cp35-cp35m-win_amd64.whl", hash = "sha256:cc8955cfbfc7a115fa81d85284ee61147059a753344bc51098f3ccd69b0d7e0c"},
-    {file = "PyYAML-5.3.1-cp36-cp36m-win32.whl", hash = "sha256:7739fc0fa8205b3ee8808aea45e968bc90082c10aef6ea95e855e10abf4a37b2"},
-    {file = "PyYAML-5.3.1-cp36-cp36m-win_amd64.whl", hash = "sha256:69f00dca373f240f842b2931fb2c7e14ddbacd1397d57157a9b005a6a9942648"},
-    {file = "PyYAML-5.3.1-cp37-cp37m-win32.whl", hash = "sha256:d13155f591e6fcc1ec3b30685d50bf0711574e2c0dfffd7644babf8b5102ca1a"},
-    {file = "PyYAML-5.3.1-cp37-cp37m-win_amd64.whl", hash = "sha256:73f099454b799e05e5ab51423c7bcf361c58d3206fa7b0d555426b1f4d9a3eaf"},
-    {file = "PyYAML-5.3.1-cp38-cp38-win32.whl", hash = "sha256:06a0d7ba600ce0b2d2fe2e78453a470b5a6e000a985dd4a4e54e436cc36b0e97"},
-    {file = "PyYAML-5.3.1-cp38-cp38-win_amd64.whl", hash = "sha256:95f71d2af0ff4227885f7a6605c37fd53d3a106fcab511b8860ecca9fcf400ee"},
-    {file = "PyYAML-5.3.1.tar.gz", hash = "sha256:b8eac752c5e14d3eca0e6dd9199cd627518cb5ec06add0de9d32baeee6fe645d"},
-]
-reno = [
-    {file = "reno-2.11.3-py2.py3-none-any.whl", hash = "sha256:bc5279fa4f0c4b34eb2a146c7893555127b903f71880f7212a6c99c6aaca4ad0"},
-    {file = "reno-2.11.3.tar.gz", hash = "sha256:98e1eb504566e17611b2cbdbcc065aa4f35d34d3382aafaadeb041b399ca7544"},
 ]
 requests = [
     {file = "requests-2.24.0-py2.py3-none-any.whl", hash = "sha256:fe75cc94a9443b9246fc7049224f75604b113c36acb93f87b80ed42c44cbb898"},
