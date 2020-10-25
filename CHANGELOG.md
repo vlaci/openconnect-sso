@@ -1,5 +1,31 @@
 # Changelog
 
+## vNext
+
+### New features
+
+- New `--on-disconnect` argument to run shell command when `openconnect` exits
+  ([pull/33](https://github.com/vlaci/openconnect-sso/pull/33))
+
+  It is useful for example to restart SSH Control Master connections upon exit.
+
+- Adding `--proxy` argument from OpenConnect
+  ([pull/20](https://github.com/vlaci/openconnect-sso/pull/20))
+
+  Authentication honors this argument too
+
+- Experimental Windows support
+  ([pull/16](https://github.com/vlaci/openconnect-sso/pull/16))
+
+  `sudo` binary needs to be installed in addition to `openconnect`
+
+### Bug fixes
+
+- Application no longer crashes when the config file is not readable
+  ([pull/33](https://github.com/vlaci/openconnect-sso/pull/33))
+- Work around issue with password retrieval from `kwallet`
+  ([pull/26](https://github.com/vlaci/openconnect-sso/pull/26))
+
 ## v0.5.0
 
 ### New Features
@@ -162,4 +188,4 @@ installation of `Qt` by declaring dependencies to `PyQt5` and
 
 ### New Features
 
-- `--authenticate [json|shell]` command line argument
+- `--authenticate [json|shell]` command line a# Change
