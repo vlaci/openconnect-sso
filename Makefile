@@ -3,6 +3,14 @@ CONTINUE_ON_ERROR ?= # should be used only for testing
 
 PRE_COMMIT_HOME=$(dir MAKEFILE_LIST).git/pre-commit
 
+ifeq ($(OS),Windows_NT)
+	PYTHON ?= python
+    VENV_BIN := .venv/Scripts
+else
+	PYTHON ?= python3
+    VENV_BIN := .venv/bin
+endif
+
 .ONESHELL:
 SHELL = bash
 .SHELLFLAGS = -euo pipefail -c
@@ -60,13 +68,13 @@ endif
 			printf "  $(YELLOW)%s$(RESET)\n%-12s %s\n", m[1], "", m[2]
 		}
 	}
-	match($$0, /^([^?= ]+)\s*\?=\s*([^# ]+)?\s*## +(.*)/, m) {
+	match($$0, /^([^?= ]+)\s*\?=\s*([^#]+[^ ]+)?\s*## +(.*)/, m) {
 		if (length(m[2]) == 0) {
 			m[2] = "unset"
 		}
 		printf "  $(GREEN)%s$(RESET): %s (default: $(BOLD)%s$(RESET))\n", m[1], m[3], m[2]
 	}
-	match($$0, /^[^: ]+\s*:\s*([^?= ]+)\s*\?=\s*([^# ]+)?\s*## +(.*)/, m) {
+	match($$0, /^[^: ]+\s*:\s*([^?= ]+)\s*\?=\s*([^#]+[^ ]+)?\s*## +(.*)/, m) {
 		if (length(m[2]) == 0) {
 			m[2] = "unset"
 		}
@@ -79,16 +87,18 @@ dev:  ## Initializes repository for development
 	@$(echo-stage) "Setting up pre-commit hooks..."
 	pre-commit install --install-hooks
 
-	$(echo-stage) "Removing existing .venv directory if exists..."
-	rm -fr .venv
-
-	$(echo-stage) "Creating virtualenv in .venv..."
-	python3 -m venv .venv
-
+	$(echo-stage) "Checking existing if existing .venv exists..."
+	if [[ -f "$(VENV_BIN)/pip" ]] && "$(VENV_BIN)/pip" --version > /dev/null; then
+		$(echo-stage) "Using existing .venv directory..."
+	else
+		$(echo-stage) "Creating virtualenv in .venv..."
+		rm -rf .venv
+		$(PYTHON) -m venv .venv
+	fi
 	$(echo-stage) "Installing openconnect-sso in develop mode..."
-	source .venv/bin/activate && poetry install
-
+	(source $(VENV_BIN)/activate && poetry install $(POETRYARGS))
 	$(echo-success) "Development installation finished."
+dev: POETRYARGS ?= -E full  ## Additional arguments for poetry install
 
 .PHONY: clean
 clean:  ## Remove temporary files and artifacts
@@ -105,11 +115,11 @@ pre-commit:
 
 .PHONY: test
 test:  ## Run tests
-	$(NIX_QTWRAPPER) .venv/bin/pytest
+	$(NIX_QTWRAPPER) $(VENV_BIN)/pytest
 
 ###############################################################################
 ## Release
-VERSION = $(shell .venv/bin/python -c 'import openconnect_sso; print(f"v{openconnect_sso.__version__}")')
+VERSION = $(shell $(VENV_BIN)/python -c 'import openconnect_sso; print(f"v{openconnect_sso.__version__}")')
 
 .PHONY: dist
 dist:  ## Build packages from whatever state the repository is
