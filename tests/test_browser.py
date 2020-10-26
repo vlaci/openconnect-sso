@@ -1,5 +1,6 @@
 import attr
 import pytest
+import sys
 
 from openconnect_sso.browser import Browser, DisplayMode
 
@@ -10,6 +11,10 @@ async def test_browser_context_manager_should_work_in_empty_context_manager():
         pass
 
 
+@pytest.mark.xfail(
+    sys.platform in ["darwin", "win32"],
+    reason="https://github.com/vlaci/openconnect-sso/issues/23",
+)
 @pytest.mark.asyncio
 async def test_browser_reports_loaded_url(httpserver):
     async with Browser(display_mode=DisplayMode.HIDDEN) as browser:
@@ -22,6 +27,10 @@ async def test_browser_reports_loaded_url(httpserver):
         assert browser.url == auth_url
 
 
+@pytest.mark.xfail(
+    sys.platform in ["darwin", "win32"],
+    reason="https://github.com/vlaci/openconnect-sso/issues/23",
+)
 @pytest.mark.asyncio
 async def test_browser_cookies_accessible(httpserver):
     async with Browser(display_mode=DisplayMode.HIDDEN) as browser:
