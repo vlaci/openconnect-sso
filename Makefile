@@ -130,7 +130,7 @@ dist:  ## Build packages from whatever state the repository is
 tag-repo: CURRENT_TAG = $(shell git describe --tags)
 tag-repo:
 	@$(echo-stage) "Tagging repository as $(VERSION)"
-	if [ "$(VERSION)" != "$(CURRENT_TAG)" ]; then
+	if [[ "$(VERSION)" != "$(CURRENT_TAG)" ]]; then
 		git tag $(VERSION) || { $(error-exit) "Existing tag $(VERSION) is not at HEAD!"; }
 	fi
 
@@ -146,11 +146,11 @@ before-clean:
 
 before-release:
 	@$(echo-stage) "Building release version..."
-	if [ -n "$$(git status --short)" ]; then
+	if [[ -n "$$(git status --short)" ]]; then
 		git status
 		$(error-exit) "Repository is dirty!"
 	fi
-	if [ $$(git rev-parse HEAD) != $$(git rev-parse origin/master) ]; then
+	if [[ $$(git rev-parse HEAD) != $$(git rev-parse origin/master) ]]; then
 		git --no-pager log --oneline --graph origin/master...
 		$(error-exit) "HEAD must point to origin/master!"
 	fi
