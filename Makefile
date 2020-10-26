@@ -68,26 +68,28 @@ endif
 			printf "  $(YELLOW)%s$(RESET)\n%-12s %s\n", m[1], "", m[2]
 		}
 	}
-	match($$0, /^([^?= ]+)\s*\?=\s*([^#]+[^ ]+)?\s*## +(.*)/, m) {
+	match($$0, /^([^?= ]+)\s*\?=\s*([^#]+)?\s*## +(.*)/, m) {
 		if (length(m[2]) == 0) {
 			m[2] = "unset"
 		}
+		gsub(/^[ ]+|[ ]+$$/, "", m[2])
 		printf "  $(GREEN)%s$(RESET): %s (default: $(BOLD)%s$(RESET))\n", m[1], m[3], m[2]
 	}
-	match($$0, /^[^: ]+\s*:\s*([^?= ]+)\s*\?=\s*([^#]+[^ ]+)?\s*## +(.*)/, m) {
+	match($$0, /^[^: ]+\s*:\s*([^?= ]+)\s*\?=\s*([^#]+)?\s*## +(.*)/, m) {
 		if (length(m[2]) == 0) {
 			m[2] = "unset"
 		}
+		gsub(/^[ ]+|[ ]+$$/, "", m[2])
 		printf "%-13s- $(GREEN)%s$(RESET): %s (default: $(BOLD)%s$(RESET))\n", "", m[1], m[3], m[2]
 	}
 	' $(MAKEFILE_LIST)
 
 .PHONY: dev
 dev:  ## Initializes repository for development
-	@$(echo-stage) "Setting up pre-commit hooks..."
-	pre-commit install --install-hooks
-
-	$(echo-stage) "Checking existing if existing .venv exists..."
+	@if [[ "$(strip $(PRECOMMIT))" =~ ^(true|1|y|yes)$$ ]]; then
+		$(MAKE) pre-commit-install
+	fi
+	@$(echo-stage) "Checking existing if existing .venv exists..."
 	if [[ -f "$(VENV_BIN)/pip" ]] && "$(VENV_BIN)/pip" --version > /dev/null; then
 		$(echo-stage) "Using existing .venv directory..."
 	else
@@ -95,10 +97,17 @@ dev:  ## Initializes repository for development
 		rm -rf .venv
 		$(PYTHON) -m venv .venv
 	fi
+	$(echo-stage) "Updating pip in .venv..."
+	$(VENV_BIN)/python -m pip install --upgrade pip
 	$(echo-stage) "Installing openconnect-sso in develop mode..."
 	(source $(VENV_BIN)/activate && poetry install $(POETRYARGS))
 	$(echo-success) "Development installation finished."
 dev: POETRYARGS ?= -E full  ## Additional arguments for poetry install
+dev: PRECOMMIT ?= yes ## Install pre-commit hooks
+
+pre-commit-install:
+	@$(echo-stage) "Setting up pre-commit hooks..."
+	pre-commit install --install-hooks
 
 .PHONY: clean
 clean:  ## Remove temporary files and artifacts
@@ -110,7 +119,7 @@ clean:  ## Remove temporary files and artifacts
 check: pre-commit test  ## Run required tests and coding style checks
 
 .PHONY: pre-commit
-pre-commit:
+pre-commit: pre-commit-install
 	pre-commit run -a
 
 .PHONY: test
