@@ -45,7 +45,7 @@ help:  ## Show this help message
 #   target: TARGET_SPECIFIC ?=  ## This description appears at target's help
 #
 ifeq (, $(shell which gawk))
- $(error "This target requires 'gawk'. Install that first.")
+	@echo -e "$(RED)This target requires 'gawk'. Install that first.$(RESET)" && exit 1
 endif
 	@echo -e "Usage: $(BOLD)make$(RESET) $(YELLOW)<target>$(RESET) [$(GREEN)VARIABLE$(RESET)=value, ...]"
 #	@echo
