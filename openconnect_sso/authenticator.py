@@ -99,7 +99,7 @@ def create_http_session(proxy):
             "Accept-Encoding": "identity",
             "X-Transcend-Version": "1",
             "X-Aggregate-Auth": "1",
-            "X-AnyConnect-Platform": "linux-64",
+            "X-Support-HTTP-Auth": "true",
             "Content-Type": "application/x-www-form-urlencoded",
             # I know, it is invalid but that’s what Anyconnect sends
         }
