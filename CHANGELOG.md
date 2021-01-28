@@ -2,6 +2,14 @@
 
 ## vNext
 
+- Use "modern" style authentication header
+  ([pull/37](https://github.com/vlaci/openconnect-sso/pull/37))
+
+  It is inspired by
+  [openconnect/mr/75](https://gitlab.com/openconnect/openconnect/-/merge_requests/75)
+  Without this header recent AnyConnect servers will not send the correct
+  reply redirecting to the authentication page
+
 ## v0.6.0
 
 ### New features
