@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: [Ubuntu, MacOS, Windows]
+        os: [Ubuntu, Windows]
         python-version: [3.8]
         include:
         - python-version: 3.6
