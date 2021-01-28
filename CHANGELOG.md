@@ -2,6 +2,8 @@
 
 ## vNext
 
+## v0.6.1
+
 - Use "modern" style authentication header
   ([pull/37](https://github.com/vlaci/openconnect-sso/pull/37))
 
