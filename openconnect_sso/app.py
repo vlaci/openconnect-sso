@@ -171,6 +171,7 @@ def authenticate_to(host, proxy, credentials, display_mode):
 def run_openconnect(auth_info, host, proxy, args):
     command_line = [
         "sudo",
+        "--stdin",  # process is detached from the controlling terminal
         "openconnect",
         "--cookie",
         auth_info.session_token,
@@ -183,7 +184,7 @@ def run_openconnect(auth_info, host, proxy, args):
         command_line.extend(["--proxy", proxy])
 
     logger.debug("Starting OpenConnect", command_line=command_line)
-    return subprocess.run(command_line).returncode
+    return subprocess.run(command_line, start_new_session=True).returncode
 
 
 def handle_disconnect(command):
