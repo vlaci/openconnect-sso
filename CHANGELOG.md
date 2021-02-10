@@ -2,6 +2,11 @@
 
 ## vNext
 
+## v0.6.2
+
+- Updating dependencies to newer versions
+- `python-keyring` is updated to 22.0.1 to fix Arch Linux (AUR) packaging
+
 ## v0.6.1
 
 - Use "modern" style authentication header
