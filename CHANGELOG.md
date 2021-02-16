@@ -2,6 +2,10 @@
 
 ## vNext
 
+- Updating `poetry2nix` to fix build on `nixpkgs-unstable`
+  ([issues/40](https://github.com/vlaci/openconnect-sso/issues/40),
+  [pull/41](https://github.com/vlaci/openconnect-sso/pull/41))
+
 ## v0.6.2
 
 - Updating dependencies to newer versions
