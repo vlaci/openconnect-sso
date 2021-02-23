@@ -2,9 +2,13 @@
 
 ## vNext
 
+## v0.6.3
+
 - Updating `poetry2nix` to fix build on `nixpkgs-unstable`
   ([issues/40](https://github.com/vlaci/openconnect-sso/issues/40),
   [pull/41](https://github.com/vlaci/openconnect-sso/pull/41))
+- Relax `structlog`'s version restriction
+  ([pull/44](https://github.com/vlaci/openconnect-sso/pull/44))
 
 ## v0.6.2
 
