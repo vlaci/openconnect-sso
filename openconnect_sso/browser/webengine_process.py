@@ -67,6 +67,10 @@ class Process(multiprocessing.Process):
     def run(self):
         # To work around funky GC conflicts with C++ code by ensuring QApplication terminates last
         global app
+
+        signal.signal(signal.SIGTERM, on_sigterm)
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+
         cfg = config.load()
 
         argv = sys.argv.copy()
@@ -200,9 +204,3 @@ def get_selectors(rules, credentials):
 def on_sigterm(signum, frame):
     logger.info("SIGNAL handler")
     QApplication.quit()
-
-
-if __name__ == "__main__":
-    signal.signal(signal.SIGTERM, on_sigterm)
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
-    sys.exit(Process().run())
