@@ -10,8 +10,8 @@ import pkg_resources
 import structlog
 
 from PyQt5.QtCore import QUrl, QTimer
-from PyQt5.QtNetwork import QNetworkProxy
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineScript
+from PyQt5.QtNetwork import QNetworkCookie, QNetworkProxy
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineScript, QWebEngineProfile
 from PyQt5.QtWidgets import QApplication
 
 from openconnect_sso import config
@@ -119,6 +119,19 @@ class Process(multiprocessing.Process):
         self.join()
 
 
+def on_sigterm(signum, frame):
+    logger.info("Terminate requested.")
+    # Force flush cookieStore to disk. Without this hack the cookieStore may
+    # not be synced at all if the browser lives only for a short amount of
+    # time. Something is off with the call order of destructors as there is no
+    # such issue in C++.
+
+    # See: https://github.com/qutebrowser/qutebrowser/commit/8d55d093f29008b268569cdec28b700a8c42d761
+    cookie = QNetworkCookie()
+    QWebEngineProfile.defaultProfile().cookieStore().deleteCookie(cookie)
+    QApplication.quit()
+
+
 class WebBrowser(QWebEngineView):
     def __init__(self, auto_fill_rules, on_update):
         super().__init__()
@@ -199,8 +212,3 @@ def get_selectors(rules, credentials):
                 f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.click(); }}"""
             )
     return "\n".join(statements)
-
-
-def on_sigterm(signum, frame):
-    logger.info("SIGNAL handler")
-    QApplication.quit()

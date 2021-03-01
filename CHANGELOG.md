@@ -2,6 +2,9 @@
 
 ## vNext
 
+- It is now possible to reuse previous authentication sessions, so that
+  entering password/MFA token may not be needed at all.
+
 ## v0.6.3
 
 - Updating `poetry2nix` to fix build on `nixpkgs-unstable`
