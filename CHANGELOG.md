@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## v0.7.0
 
 - It is now possible to reuse previous authentication sessions, so that
   entering password/MFA token may not be needed at all.
