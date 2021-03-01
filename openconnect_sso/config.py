@@ -4,6 +4,7 @@ from urllib.parse import urlparse, urlunparse
 
 import attr
 import keyring
+import keyring.errors
 import structlog
 import toml
 import xdg.BaseDirectory
@@ -98,11 +99,18 @@ class Credentials(ConfigNode):
 
     @property
     def password(self):
-        return keyring.get_password(APP_NAME, self.username)
+        try:
+            return keyring.get_password(APP_NAME, self.username)
+        except keyring.errors.KeyringError:
+            logger.info("Cannot retrieve saved password from keyring.")
+            return ""
 
     @password.setter
     def password(self, value):
-        keyring.set_password(APP_NAME, self.username, value)
+        try:
+            keyring.set_password(APP_NAME, self.username, value)
+        except keyring.errors.KeyringError:
+            logger.info("Cannot save password to keyring.")
 
 
 @attr.s
