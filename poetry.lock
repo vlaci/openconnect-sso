@@ -349,7 +349,7 @@ testing = ["fields", "hunter", "process-tests (==2.0.2)", "six", "pytest-xdist",
 
 [[package]]
 name = "pytest-httpserver"
-version = "0.3.8"
+version = "1.0.0"
 description = "pytest-httpserver is a httpserver for pytest"
 category = "dev"
 optional = false
@@ -359,8 +359,8 @@ python-versions = ">=3.4"
 werkzeug = "*"
 
 [package.extras]
-dev = ["flake8", "wheel", "pytest", "pytest-cov", "coverage", "ipdb", "requests", "sphinx", "sphinx-rtd-theme", "reno", "autopep8"]
-test = ["pytest", "pytest-cov", "coverage", "requests"]
+dev = ["autopep8", "coverage", "flake8", "ipdb", "pytest", "pytest-cov", "reno", "requests", "sphinx", "sphinx-rtd-theme", "wheel"]
+test = ["coverage", "pytest", "pytest-cov", "requests"]
 
 [[package]]
 name = "pywin32-ctypes"
@@ -513,7 +513,7 @@ full = ["PyQt5", "PyQtWebEngine"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "4262431fb11139ac41613de76505b1bdfc92b17fb726a5a815ea90fb867f2d15"
+content-hash = "b5c7ec2286b5fa4240e8cf21e03b9ff242ce931714845c7cf8b9c447ebf6003b"
 
 [metadata.files]
 appdirs = [
@@ -800,8 +800,8 @@ pytest-cov = [
     {file = "pytest_cov-2.9.0-py2.py3-none-any.whl", hash = "sha256:c87dfd8465d865655a8213859f1b4749b43448b5fae465cb981e16d52a811424"},
 ]
 pytest-httpserver = [
-    {file = "pytest_httpserver-0.3.8-py3-none-any.whl", hash = "sha256:8588edd98a7cec8b5fb481ad1180df0e928648816213c242974a318842d0befe"},
-    {file = "pytest_httpserver-0.3.8.tar.gz", hash = "sha256:d896a6556e426240837891b0552040ed4148e393ddf63f675b60d47bcd2d3f39"},
+    {file = "pytest_httpserver-1.0.0-py3-none-any.whl", hash = "sha256:32cb2befbc519eb2b5907b772809600b470ef83a20e6d78613210debec4b0ba0"},
+    {file = "pytest_httpserver-1.0.0.tar.gz", hash = "sha256:ae3095d134d40602e95721140e222139da4a579956123990af85825324d0746d"},
 ]
 pywin32-ctypes = [
     {file = "pywin32-ctypes-0.2.0.tar.gz", hash = "sha256:24ffc3b341d457d48e8922352130cf2644024a4ff09762a2261fd34c36ee5942"},
