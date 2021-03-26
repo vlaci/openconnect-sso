@@ -5,6 +5,8 @@
 - Do not fail if keyring is not accessible
   ([issues/45](https://github.com/vlaci/openconnect-sso/issues/45),
   [pull/46](https://github.com/vlaci/openconnect-sso/pull/46))
+- Updating dependencies and support `pyxdg 0.27`
+  ([pull/49](https://github.com/vlaci/openconnect-sso/pull/49))
 
 ## v0.7.0
 
