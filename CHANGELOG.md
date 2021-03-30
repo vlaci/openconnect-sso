@@ -2,6 +2,10 @@
 
 ## vNext
 
+## v0.7.2
+- Update dependencies `keyring` and `importlib-metadata`
+  ([pull/52](https://github.com/vlaci/openconnect-sso/pull/52))
+
 ## v0.7.1
 
 - Do not fail if keyring is not accessible
