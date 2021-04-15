@@ -129,7 +129,11 @@ def on_sigterm(signum, frame):
     # See: https://github.com/qutebrowser/qutebrowser/commit/8d55d093f29008b268569cdec28b700a8c42d761
     cookie = QNetworkCookie()
     QWebEngineProfile.defaultProfile().cookieStore().deleteCookie(cookie)
-    QApplication.quit()
+
+    # Give some time to actually save cookies
+    exit_timer = QTimer(app)
+    exit_timer.timeout.connect(QApplication.quit)
+    exit_timer.start(1000)  # ms
 
 
 class WebBrowser(QWebEngineView):
