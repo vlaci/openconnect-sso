@@ -2,6 +2,8 @@
 
 ## vNext
 
+## v0.7.3
+
 - More failsafe method to reuse existing authentication sessions, so that
   entering password/MFA token may not be needed at all. Persisting HTTP cookies
   were prone to a race condition which is hopefully mitigated by this change.
