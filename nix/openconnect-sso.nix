@@ -24,7 +24,7 @@ poetry2nix.mkPoetryApplication {
     poetry2nix.defaultPoetryOverrides
     (
       self: super: {
-        inherit (python3Packages) cryptography keyring pyqt5 pyqtwebengine six;
+        inherit (python3Packages) cryptography keyring pyqt5 pyqtwebengine six more-itertools toml;
         coverage_enable_subprocess = with python3.pkgs; buildPythonPackage rec {
           pname = "coverage_enable_subprocess";
           version = "1.0";
