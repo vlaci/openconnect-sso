@@ -1,1 +1,1 @@
-(import ./nix {}).openconnect-sso
+(import ./nix { }).openconnect-sso
