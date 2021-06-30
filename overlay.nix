@@ -1,3 +1,3 @@
-self: super: {
-  inherit (super.callPackage ./nix { pkgs = self; }) openconnect-sso;
+final: prev: {
+  inherit (prev.callPackage ./nix { pkgs = final; }) openconnect-sso;
 }
