@@ -11,7 +11,12 @@ import structlog
 
 from PyQt5.QtCore import QUrl, QTimer, pyqtSlot, Qt
 from PyQt5.QtNetwork import QNetworkCookie, QNetworkProxy
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineScript, QWebEngineProfile, QWebEnginePage
+from PyQt5.QtWebEngineWidgets import (
+    QWebEngineView,
+    QWebEngineScript,
+    QWebEngineProfile,
+    QWebEnginePage,
+)
 from PyQt5.QtWidgets import QApplication, QWidget, QSizePolicy, QVBoxLayout
 
 from openconnect_sso import config
@@ -191,6 +196,7 @@ autoFill();
 
         self._on_update(Url(url))
 
+
 class WebPopupWindow(QWidget):
     def __init__(self, profile):
         super().__init__()
@@ -206,7 +212,9 @@ class WebPopupWindow(QWidget):
         self._view.setPage(QWebEnginePage(profile, self._view))
 
         self._view.titleChanged.connect(super().setWindowTitle)
-        self._view.page().geometryChangeRequested.connect(self.handleGeometryChangeRequested)
+        self._view.page().geometryChangeRequested.connect(
+            self.handleGeometryChangeRequested
+        )
         self._view.page().windowCloseRequested.connect(super().close)
 
     def view(self):
