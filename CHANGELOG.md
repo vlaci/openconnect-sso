@@ -1,6 +1,11 @@
 # Changelog
 
-## vNext
+## v0.8.0
+
+- Updating dependencies
+- Add support for MFA popup dialogs
+- Pass cookie in STDIN to hide its value in `ps` output
+- Support NixOS 21.11
 
 ## v0.7.3
 
