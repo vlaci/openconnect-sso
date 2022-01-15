@@ -5,7 +5,7 @@ except ModuleNotFoundError:
     import importlib_metadata
 
 
-# _metadata = importlib_metadata.metadata("openconnect-sso")
+_metadata = importlib_metadata.metadata("openconnect-sso")
 
-__version__ = 1
-__description__ = "test"
+__version__ = _metadata["Version"]
+__description__ = _metadata["Summary"]
