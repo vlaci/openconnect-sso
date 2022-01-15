@@ -96,9 +96,13 @@ def get_default_auto_fill_rules():
 @attr.s
 class Credentials(ConfigNode):
     username = attr.ib()
+    _password = attr.ib(default=None)
 
     @property
     def password(self):
+        if self._password:
+            return self._password
+
         try:
             return keyring.get_password(APP_NAME, self.username)
         except keyring.errors.KeyringError:
@@ -107,6 +111,8 @@ class Credentials(ConfigNode):
 
     @password.setter
     def password(self, value):
+        self._password = value
+
         try:
             keyring.set_password(APP_NAME, self.username, value)
         except keyring.errors.KeyringError:

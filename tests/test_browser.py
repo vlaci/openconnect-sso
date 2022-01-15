@@ -5,45 +5,31 @@ import sys
 from openconnect_sso.browser import Browser, DisplayMode
 
 
-@pytest.mark.asyncio
-async def test_browser_context_manager_should_work_in_empty_context_manager():
-    async with Browser() as _:
+def test_browser_context_manager_should_work_in_empty_context_manager():
+    with Browser() as _:
         pass
 
-
-@pytest.mark.xfail(
-    sys.platform in ["darwin", "win32"],
-    reason="https://github.com/vlaci/openconnect-sso/issues/23",
-)
-@pytest.mark.asyncio
-async def test_browser_reports_loaded_url(httpserver):
-    async with Browser(display_mode=DisplayMode.HIDDEN) as browser:
-        auth_url = httpserver.url_for("/authenticate")
-
-        await browser.authenticate_at(auth_url, credentials=None)
-
-        assert browser.url is None
-        await browser.page_loaded()
-        assert browser.url == auth_url
-
-
-@pytest.mark.xfail(
-    sys.platform in ["darwin", "win32"],
-    reason="https://github.com/vlaci/openconnect-sso/issues/23",
-)
-@pytest.mark.asyncio
-async def test_browser_cookies_accessible(httpserver):
-    async with Browser(display_mode=DisplayMode.HIDDEN) as browser:
+def test_browser_shown_cookies_accessible(httpserver):
+    with Browser(display_mode=DisplayMode.SHOWN) as browser:
         httpserver.expect_request("/authenticate").respond_with_data(
             "<html><body>Hello</body></html>",
             headers={"Set-Cookie": "cookie-name=cookie-value"},
         )
         auth_url = httpserver.url_for("/authenticate")
         cred = Credentials("username", "password")
+        value=browser.authenticate_at(auth_url, cred, "cookie-name")
+        assert value == "cookie-value"
 
-        await browser.authenticate_at(auth_url, cred)
-        await browser.page_loaded()
-        assert browser.cookies.get("cookie-name") == "cookie-value"
+def test_browser_hidden_cookies_accessible(httpserver):
+    with Browser(display_mode=DisplayMode.HIDDEN) as browser:
+        httpserver.expect_request("/authenticate").respond_with_data(
+            "<html><body>Hello</body></html>",
+            headers={"Set-Cookie": "cookie-name=cookie-value"},
+        )
+        auth_url = httpserver.url_for("/authenticate")
+        cred = Credentials("username", "password")
+        value=browser.authenticate_at(auth_url, cred, "cookie-name")
+        assert value == "cookie-value"
 
 
 @attr.s

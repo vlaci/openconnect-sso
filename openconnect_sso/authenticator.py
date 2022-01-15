@@ -5,6 +5,9 @@ from lxml import etree, objectify
 
 from openconnect_sso.saml_authenticator import authenticate_in_browser
 
+# See https://stackoverflow.com/a/41041028
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+
 
 logger = structlog.get_logger()
 
@@ -37,7 +40,7 @@ class Authenticator:
 
         auth_request_response = response
 
-        sso_token = await self._authenticate_in_browser(
+        sso_token = self._authenticate_in_browser(
             auth_request_response, display_mode
         )
 
@@ -66,8 +69,8 @@ class Authenticator:
         logger.debug("Auth init response received", content=response.content)
         return parse_response(response)
 
-    async def _authenticate_in_browser(self, auth_request_response, display_mode):
-        return await authenticate_in_browser(
+    def _authenticate_in_browser(self, auth_request_response, display_mode):
+        return authenticate_in_browser(
             self.proxy, auth_request_response, self.credentials, display_mode
         )
 

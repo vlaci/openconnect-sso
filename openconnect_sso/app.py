@@ -1,5 +1,6 @@
 import asyncio
 import getpass
+import sys
 import json
 import logging
 import os
@@ -14,7 +15,6 @@ from prompt_toolkit.shortcuts import radiolist_dialog
 
 from openconnect_sso import config
 from openconnect_sso.authenticator import Authenticator, AuthResponseError
-from openconnect_sso.browser import Terminated
 from openconnect_sso.config import Credentials
 from openconnect_sso.profile import get_profiles
 
@@ -41,9 +41,6 @@ def run(args):
         msg, retval = e.args
         logger.error(msg)
         return retval
-    except Terminated:
-        logger.warn("Browser window terminated, exiting")
-        return 2
     except AuthResponseError as exc:
         logger.error(
             f'Required attributes not found in response ("{exc}", does this endpoint do SSO?), exiting'
@@ -110,7 +107,12 @@ async def _run(args, cfg):
         credentials = Credentials(args.user)
 
     if credentials and not credentials.password:
-        credentials.password = getpass.getpass(prompt=f"Password ({args.user}): ")
+        if sys.stdin.isatty():
+            credentials.password = getpass.getpass(prompt=f"Password ({args.user}): ")
+        else:
+            print(f"Password ({args.user}): ")
+            credentials.password = sys.stdin.readline().rstrip()
+
         cfg.credentials = credentials
 
     if cfg.default_profile and not (args.use_profile_selector or args.server):

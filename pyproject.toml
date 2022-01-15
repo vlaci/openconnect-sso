@@ -20,7 +20,7 @@ classifiers = [
 openconnect-sso = "openconnect_sso.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 attrs = ">=18.2"
 colorama = "^0.4"
 importlib-metadata = { version = "^3.10.0", python = "<3.8" }
@@ -33,19 +33,19 @@ structlog = ">=20.1"
 toml = "^0.10"
 setuptools = ">40.0"
 
-PyQt5 = { version = "^5.12", optional = true }
-PyQtWebEngine = { version ="^5.12", optional = true }
 PySocks = "^1.7.1"
+selenium = "^4.1.0"
+webdriver-manager = "^3.5.2"
 
 [tool.poetry.extras]
 full = [ "PyQt5", "PyQtWebEngine" ]
 
 [tool.poetry.dev-dependencies]
 coverage_enable_subprocess = "^1.0"
-pytest = "^3.0"
+pytest = "^6.2"
 black = "=19.3b0"
-pytest-asyncio = "^0.10.0"
-pytest-cov = "^2.7"
+pytest-asyncio = "^0.17.0"
+pytest-cov = "^3.0.0"
 pytest-httpserver = "^1.0"
 # Fix installation of zipp dependency of importlib-metadata
 setuptools-scm = { version ="^3.4", extras = ["toml"] }
