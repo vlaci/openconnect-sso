@@ -170,8 +170,6 @@ def run_openconnect(auth_info, host, proxy, args):
     command_line = [
         "sudo",
         "openconnect",
-        "--no-dtls",
-        "--base-mtu=1450",
         "--cookie-on-stdin",
         "--servercert",
         auth_info.server_cert_hash,
