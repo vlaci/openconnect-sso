@@ -1,84 +1,110 @@
-import asyncio
-
+import json
 import structlog
 
-from . import webengine_process as web
+from urllib.parse import urlparse
+from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.utils import ChromeType
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from ..config import DisplayMode
+
+from openconnect_sso import config
 
 logger = structlog.get_logger()
 
 
 class Browser:
     def __init__(self, proxy=None, display_mode=DisplayMode.SHOWN):
-        self.browser_proc = None
-        self.updater = None
-        self.running = False
-        self._urls = asyncio.Queue()
-        self.url = None
-        self.cookies = {}
-        self.loop = asyncio.get_event_loop()
+        self.cfg = config.load()
         self.proxy = proxy
         self.display_mode = display_mode
 
-    async def spawn(self):
-        self.browser_proc = web.Process(self.proxy, self.display_mode)
-        self.browser_proc.start()
-        self.running = True
+    def authenticate_at(self, url, credentials, expected_cookie_name):
+        chrome_options = Options()
+        capabilities = DesiredCapabilities.CHROME
 
-        self.updater = asyncio.ensure_future(self._update_status())
+        if self.display_mode == DisplayMode.HIDDEN:
+            chrome_options.add_argument("headless")
+            chrome_options.add_argument("no-sandbox")
+            chrome_options.add_argument('--disable-dev-shm-usage')
 
-        def stop(_task):
-            self.running = False
-
-        asyncio.ensure_future(self.browser_proc.wait()).add_done_callback(stop)
-
-    async def _update_status(self):
-        while self.running:
-            logger.debug("Waiting for message from browser process")
-
-            try:
-                state = await self.browser_proc.get_state_async()
-            except EOFError:
-                if self.running:
-                    logger.warn("Connection terminated with browser")
-                    self.running = False
-                else:
-                    logger.info("Browser exited")
-                await self._urls.put(None)
-                return
-            logger.debug("Message received from browser", message=state)
-
-            if isinstance(state, web.Url):
-                await self._urls.put(state.url)
-            elif isinstance(state, web.SetCookie):
-                self.cookies[state.name] = state.value
+        if self.proxy:
+            proxy = Proxy()
+            proxy.proxy_type = ProxyType.MANUAL
+            parsed = urlparse(self.proxy)
+            if parsed.scheme.startswith("socks5"):
+                proxy.socks_proxy = f"{parsed.hostname}:{parsed.port}"
+            elif parsed.scheme.startswith("http"):
+                proxy.http_proxy = f"{parsed.hostname}:{parsed.port}"
+            elif parsed.scheme.startswith("ssl"):
+                proxy.ssl_proxy = f"{parsed.hostname}:{parsed.port}"
             else:
-                logger.error("Message unrecognized", message=state)
+                raise ValueError("Unsupported proxy type", parsed.scheme)
 
-    async def authenticate_at(self, url, credentials):
-        assert self.running
-        self.browser_proc.authenticate_at(url, credentials)
+            proxy.add_to_capabilities(capabilities)
 
-    async def page_loaded(self):
-        rv = await self._urls.get()
-        if not self.running:
-            raise Terminated()
-        self.url = rv
+        driver = webdriver.Chrome(
+            ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install(),
+            options=chrome_options,
+            desired_capabilities=capabilities
+        )
 
-    async def __aenter__(self):
-        await self.spawn()
-        return self
+        driver.get(url)
+        if credentials:
+            for url_pattern, rules in self.cfg.auto_fill_rules.items():
+                script = f"""
+// ==UserScript==
+// @include {url_pattern}
+// ==/UserScript==
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        try:
-            self.running = False
-            self.browser_proc.terminate()
-        except ProcessLookupError:
-            # already stopped
-            pass
-        await self.browser_proc.wait()
-        await self.updater
+function autoFill() {{
+    {get_selectors(rules, credentials)}
+    setTimeout(autoFill, 1000);
+}}
+autoFill();
+"""
+        driver.execute_script(script)
+        WebDriverWait(driver, 10).until(lambda driver: has_cookie(driver.get_cookies(), expected_cookie_name))
+        return get_cookie(driver.get_cookies(), expected_cookie_name)
 
 
-class Terminated(Exception):
-    pass
+def has_cookie(cookies, cookie_name):
+    return get_cookie(cookies, cookie_name) is not None
+
+
+def get_cookie(cookies, cookie_name):
+    for c in cookies:
+        if c["name"] == cookie_name:
+            return c["value"]
+
+    return None
+
+
+def get_selectors(rules, credentials):
+    statements = []
+    for rule in rules:
+        selector = json.dumps(rule.selector)
+        if rule.action == "stop":
+            statements.append(
+                f"""var elem = document.querySelector({selector}); if (elem) {{ return; }}"""
+            )
+        elif rule.fill:
+            value = json.dumps(getattr(credentials, rule.fill, None))
+            if value:
+                statements.append(
+                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {value}; elem.dispatchEvent(new Event("blur")); }}"""
+                )
+            else:
+                logger.warning(
+                    "Credential info not available",
+                    type=rule.fill,
+                    possibilities=dir(credentials),
+                )
+        elif rule.action == "click":
+            statements.append(
+                f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.click(); }}"""
+            )
+    return "\n".join(statements)

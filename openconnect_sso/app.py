@@ -14,7 +14,6 @@ from prompt_toolkit.shortcuts import radiolist_dialog
 
 from openconnect_sso import config
 from openconnect_sso.authenticator import Authenticator, AuthResponseError
-from openconnect_sso.browser import Terminated
 from openconnect_sso.config import Credentials
 from openconnect_sso.profile import get_profiles
 
@@ -41,9 +40,6 @@ def run(args):
         msg, retval = e.args
         logger.error(msg)
         return retval
-    except Terminated:
-        logger.warn("Browser window terminated, exiting")
-        return 2
     except AuthResponseError as exc:
         logger.error(
             f'Required attributes not found in response ("{exc}", does this endpoint do SSO?), exiting'
@@ -174,6 +170,8 @@ def run_openconnect(auth_info, host, proxy, args):
     command_line = [
         "sudo",
         "openconnect",
+        "--no-dtls",
+        "--base-mtu=1450",
         "--cookie-on-stdin",
         "--servercert",
         auth_info.server_cert_hash,
