@@ -118,6 +118,12 @@ async def _run(args, cfg):
         credentials.password = getpass.getpass(prompt=f"Password ({args.user}): ")
         cfg.credentials = credentials
 
+    if credentials and not credentials.totp:
+        credentials.totp = getpass.getpass(
+            prompt=f"TOTP secret (leave blank if not required) ({args.user}): "
+        )
+        cfg.credentials = credentials
+
     if cfg.default_profile and not (args.use_profile_selector or args.server):
         selected_profile = cfg.default_profile
     elif args.use_profile_selector or args.profile_path:
