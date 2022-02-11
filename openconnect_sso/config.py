@@ -16,7 +16,6 @@ logger = structlog.get_logger()
 APP_NAME = "openconnect-sso"
 
 
-
 def load():
     path = xdg.BaseDirectory.load_first_config(APP_NAME)
     if not path:
@@ -119,7 +118,7 @@ class Credentials(ConfigNode):
     @property
     def totp(self):
         try:
-            totpsecret = keyring.get_password(APP_NAME+'_TOTP', self.username)
+            totpsecret = keyring.get_password(APP_NAME + "_TOTP", self.username)
             return pyotp.TOTP(totpsecret).now()
         except keyring.errors.KeyringError:
             logger.info("Cannot retrieve saved totp info from keyring.")
@@ -128,10 +127,9 @@ class Credentials(ConfigNode):
     @totp.setter
     def totp(self, value):
         try:
-            keyring.set_password(APP_NAME+'_TOTP', self.username, value)
+            keyring.set_password(APP_NAME + "_TOTP", self.username, value)
         except keyring.errors.KeyringError:
             logger.info("Cannot save totp secret to keyring.")
-
 
 
 @attr.s
