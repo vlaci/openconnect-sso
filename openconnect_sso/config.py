@@ -9,9 +9,12 @@ import structlog
 import toml
 import xdg.BaseDirectory
 
+import pyotp
+
 logger = structlog.get_logger()
 
 APP_NAME = "openconnect-sso"
+
 
 
 def load():
@@ -89,6 +92,7 @@ def get_default_auto_fill_rules():
             AutoFillRule(selector="input[type=email]", fill="username").as_dict(),
             AutoFillRule(selector="input[type=password]", fill="password").as_dict(),
             AutoFillRule(selector="input[type=submit]", action="click").as_dict(),
+            AutoFillRule(selector="input[type=tel]", fill="totp").as_dict(),
         ]
     }
 
@@ -111,6 +115,23 @@ class Credentials(ConfigNode):
             keyring.set_password(APP_NAME, self.username, value)
         except keyring.errors.KeyringError:
             logger.info("Cannot save password to keyring.")
+
+    @property
+    def totp(self):
+        try:
+            totpsecret = keyring.get_password(APP_NAME+'_TOTP', self.username)
+            return pyotp.TOTP(totpsecret).now()
+        except keyring.errors.KeyringError:
+            logger.info("Cannot retrieve saved totp info from keyring.")
+            return ""
+
+    @totp.setter
+    def totp(self, value):
+        try:
+            keyring.set_password(APP_NAME+'_TOTP', self.username, value)
+        except keyring.errors.KeyringError:
+            logger.info("Cannot save totp secret to keyring.")
+
 
 
 @attr.s
