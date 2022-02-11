@@ -121,6 +121,19 @@ Configuration is saved in `$XDG_CONFIG_HOME/openconnect-sso/config.toml`. On
 typical Linux installations it is located under
 `$HOME/.config/openconnect-sso/config.toml`
 
+For CISCO-VPN and TOTP the following seems to work by tuning the config.toml
+and removing the default "submit"-action to the following:
+
+```
+[[auto_fill_rules."https://*"]]
+selector = "input[data-report-event=Signin_Submit]"
+action = "click"
+
+[[auto_fill_rules."https://*"]]
+selector = "input[type=tel]"
+fill = "totp"
+```
+
 ## Development
 
 `openconnect-sso` is developed using [Nix](https://nixos.org/nix/). Refer to the
