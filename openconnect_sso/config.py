@@ -90,7 +90,9 @@ def get_default_auto_fill_rules():
             AutoFillRule(selector="div[id=passwordError]", action="stop").as_dict(),
             AutoFillRule(selector="input[type=email]", fill="username").as_dict(),
             AutoFillRule(selector="input[type=password]", fill="password").as_dict(),
-            AutoFillRule(selector="input[type=submit]", action="click").as_dict(),
+            AutoFillRule(
+                selector="input[data-report-event=Signin_Submit]", action="click"
+            ).as_dict(),
             AutoFillRule(selector="input[type=tel]", fill="totp").as_dict(),
         ]
     }
