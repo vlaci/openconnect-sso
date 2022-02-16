@@ -29,7 +29,7 @@ class Browser:
         if self.display_mode == DisplayMode.HIDDEN:
             chrome_options.add_argument("headless")
             chrome_options.add_argument("no-sandbox")
-            chrome_options.add_argument('--disable-dev-shm-usage')
+            chrome_options.add_argument("--disable-dev-shm-usage")
 
         if self.proxy:
             proxy = Proxy()
@@ -47,9 +47,11 @@ class Browser:
             proxy.add_to_capabilities(capabilities)
 
         self.driver = webdriver.Chrome(
-            ChromeDriverManager(chrome_type=ChromeType.CHROMIUM, log_level=CRITICAL).install(),
+            ChromeDriverManager(
+                chrome_type=ChromeType.CHROMIUM, log_level=CRITICAL
+            ).install(),
             options=chrome_options,
-            desired_capabilities=capabilities
+            desired_capabilities=capabilities,
         )
         return self
 
@@ -69,7 +71,9 @@ function autoFill() {{
 autoFill();
 """
         self.driver.execute_script(script)
-        WebDriverWait(self.driver, 10).until(lambda driver: has_cookie(driver.get_cookies(), expected_cookie_name))
+        WebDriverWait(self.driver, 10).until(
+            lambda driver: has_cookie(driver.get_cookies(), expected_cookie_name)
+        )
         return get_cookie(self.driver.get_cookies(), expected_cookie_name)
 
     def __exit__(self, exc_type, exc_value, t):

@@ -1,6 +1,4 @@
 import attr
-import pytest
-import sys
 
 from openconnect_sso.browser import Browser, DisplayMode
 
@@ -8,6 +6,7 @@ from openconnect_sso.browser import Browser, DisplayMode
 def test_browser_context_manager_should_work_in_empty_context_manager():
     with Browser() as _:
         pass
+
 
 def test_browser_shown_cookies_accessible(httpserver):
     with Browser(display_mode=DisplayMode.SHOWN) as browser:
@@ -17,8 +16,9 @@ def test_browser_shown_cookies_accessible(httpserver):
         )
         auth_url = httpserver.url_for("/authenticate")
         cred = Credentials("username", "password")
-        value=browser.authenticate_at(auth_url, cred, "cookie-name")
+        value = browser.authenticate_at(auth_url, cred, "cookie-name")
         assert value == "cookie-value"
+
 
 def test_browser_hidden_cookies_accessible(httpserver):
     with Browser(display_mode=DisplayMode.HIDDEN) as browser:
@@ -28,7 +28,7 @@ def test_browser_hidden_cookies_accessible(httpserver):
         )
         auth_url = httpserver.url_for("/authenticate")
         cred = Credentials("username", "password")
-        value=browser.authenticate_at(auth_url, cred, "cookie-name")
+        value = browser.authenticate_at(auth_url, cred, "cookie-name")
         assert value == "cookie-value"
 
 
