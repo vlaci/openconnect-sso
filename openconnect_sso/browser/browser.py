@@ -1,4 +1,5 @@
 import json
+import os
 import structlog
 from logging import CRITICAL
 
@@ -46,9 +47,16 @@ class Browser:
 
             proxy.add_to_capabilities(capabilities)
 
+        chrome_base_version = (
+            f"_{os.getenv('CHROME_BASE_VERSION')}"
+            if os.getenv("CHROME_BASE_VERSION") is not None
+            else ""
+        )
         self.driver = webdriver.Chrome(
             ChromeDriverManager(
-                chrome_type=ChromeType.CHROMIUM, log_level=CRITICAL
+                chrome_type=ChromeType.CHROMIUM,
+                log_level=CRITICAL,
+                latest_release_url=f"https://chromedriver.storage.googleapis.com/LATEST_RELEASE{chrome_base_version}",
             ).install(),
             options=chrome_options,
             desired_capabilities=capabilities,
