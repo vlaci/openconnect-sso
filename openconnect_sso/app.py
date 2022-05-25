@@ -72,7 +72,11 @@ def run(args):
 
     try:
         return run_openconnect(
-            auth_response, selected_profile, args.proxy, args.ac_version, args.openconnect_args
+            auth_response,
+            selected_profile,
+            args.proxy,
+            args.ac_version,
+            args.openconnect_args,
         )
     except KeyboardInterrupt:
         logger.warn("CTRL-C pressed, exiting")
