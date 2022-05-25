@@ -72,7 +72,7 @@ def run(args):
 
     try:
         return run_openconnect(
-            auth_response, selected_profile, args.proxy, args.openconnect_args
+            auth_response, selected_profile, args.proxy, args.ac_version, args.openconnect_args
         )
     except KeyboardInterrupt:
         logger.warn("CTRL-C pressed, exiting")
@@ -174,13 +174,13 @@ def run_openconnect(auth_info, host, proxy, version, args):
     command_line = [
         "sudo",
         "openconnect",
-        "--cookie-on-stdin",
-        "--servercert",
-        auth_info.server_cert_hash,
         "--useragent",
         f"AnyConnect Linux_64 {version}",
         "--version-string",
         version,
+        "--cookie-on-stdin",
+        "--servercert",
+        auth_info.server_cert_hash,
         *args,
         host.vpn_url,
     ]
