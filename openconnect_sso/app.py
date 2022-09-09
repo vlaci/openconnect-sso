@@ -132,7 +132,11 @@ async def _run(args, cfg):
             "Cannot determine server address. Invalid arguments specified.", 19
         )
 
-    cfg.default_profile = selected_profile
+    cfg.default_profile = config.HostProfile(
+            selected_profile.address,
+            selected_profile.user_group,
+            selected_profile.name
+        )
 
     display_mode = config.DisplayMode[args.browser_display_mode.upper()]
 
