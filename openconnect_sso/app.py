@@ -133,17 +133,23 @@ async def _run(args, cfg):
         )
 
     cfg.default_profile = selected_profile
+    
+    working_profile = config.HostProfile(
+            selected_profile.address,
+            selected_profile.user_group,
+            selected_profile.name
+        )
 
     display_mode = config.DisplayMode[args.browser_display_mode.upper()]
 
     auth_response = await authenticate_to(
-        selected_profile, args.proxy, credentials, display_mode
+        working_profile, args.proxy, credentials, display_mode
     )
 
     if args.on_disconnect and not cfg.on_disconnect:
         cfg.on_disconnect = args.on_disconnect
 
-    return auth_response, selected_profile
+    return auth_response, working_profile
 
 
 async def select_profile(profile_list):
