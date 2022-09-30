@@ -39,7 +39,7 @@ poetry2nix.mkPoetryApplication {
         };
         pytest-httpserver = super.pytest-httpserver.overrideAttrs (
           old: {
-            nativeBuildInputs = old.nativeBuildInputs ++ [ self.pytestrunner ];
+            nativeBuildInputs = old.nativeBuildInputs ++ [ self.pytest-runner ];
           }
         );
       }
