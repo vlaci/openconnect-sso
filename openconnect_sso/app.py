@@ -3,11 +3,12 @@ import getpass
 import json
 import logging
 import os
-import shlex
 import signal
 import subprocess
 from pathlib import Path
 
+import shlex
+import shutil
 import structlog
 from prompt_toolkit import HTML
 from prompt_toolkit.shortcuts import radiolist_dialog
@@ -171,8 +172,13 @@ def authenticate_to(host, proxy, credentials, display_mode):
 
 
 def run_openconnect(auth_info, host, proxy, args):
+    as_root = next((prog for prog in ("doas", "sudo") if shutil.which(prog)), None)
+    if not as_root:
+        logger.error("Cannot find suitable program to execute as superuser (doas/sudo), exiting")
+        return 20
+
     command_line = [
-        "sudo",
+        as_root,
         "openconnect",
         "--cookie-on-stdin",
         "--servercert",
