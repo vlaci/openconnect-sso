@@ -3,11 +3,12 @@ import getpass
 import json
 import logging
 import os
-import shlex
 import signal
 import subprocess
 from pathlib import Path
 
+import shlex
+import shutil
 import structlog
 from prompt_toolkit import HTML
 from prompt_toolkit.shortcuts import radiolist_dialog
@@ -136,7 +137,9 @@ async def _run(args, cfg):
             "Cannot determine server address. Invalid arguments specified.", 19
         )
 
-    cfg.default_profile = selected_profile
+    cfg.default_profile = config.HostProfile(
+        selected_profile.address, selected_profile.user_group, selected_profile.name
+    )
 
     display_mode = config.DisplayMode[args.browser_display_mode.upper()]
 
@@ -175,8 +178,15 @@ def authenticate_to(host, proxy, credentials, display_mode, version):
 
 
 def run_openconnect(auth_info, host, proxy, version, args):
+    as_root = next((prog for prog in ("doas", "sudo") if shutil.which(prog)), None)
+    if not as_root:
+        logger.error(
+            "Cannot find suitable program to execute as superuser (doas/sudo), exiting"
+        )
+        return 20
+
     command_line = [
-        "sudo",
+        as_root,
         "openconnect",
         "--useragent",
         f"AnyConnect Linux_64 {version}",

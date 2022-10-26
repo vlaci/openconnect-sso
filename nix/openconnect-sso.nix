@@ -20,28 +20,13 @@ poetry2nix.mkPoetryApplication {
     "\${qtWrapperArgs[@]}"
   ];
 
+  preferWheels = true;
+
   overrides = [
     poetry2nix.defaultPoetryOverrides
     (
       self: super: {
-        inherit (python3Packages) cryptography keyring pyqt5 pyqtwebengine six more-itertools toml;
-        coverage_enable_subprocess = with python3.pkgs; buildPythonPackage rec {
-          pname = "coverage_enable_subprocess";
-          version = "1.0";
-
-          src = fetchPypi {
-            inherit pname version;
-            sha256 = "04f0mhvzkvd74m97bldj9b5hqnsc08b8xww4xy3ws1r0ag4kvggx";
-          };
-
-          propagatedBuildInputs = [ super.coverage ];
-          doCheck = false;
-        };
-        pytest-httpserver = super.pytest-httpserver.overrideAttrs (
-          old: {
-            nativeBuildInputs = old.nativeBuildInputs ++ [ self.pytestrunner ];
-          }
-        );
+        inherit (python3Packages) cryptography pyqt6 pyqt6-sip pyqt6-webengine six more-itertools;
       }
     )
   ];

@@ -15,19 +15,14 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: [Ubuntu, Windows]
-        python-version: [3.8]
-        include:
-        - python-version: 3.6
-          os: Ubuntu
-        - python-version: 3.9
-          os: Ubuntu
+        os: [Ubuntu]
+        python-version: ["3.8", "3.9", "3.10"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -71,6 +66,7 @@ jobs:
           python -m ensurepip
           python -m pip install --upgrade pip pre-commit poetry
           make PRECOMMIT=n dev
+          sudo apt install libegl1
 
       - name: Run pytest
         shell: bash

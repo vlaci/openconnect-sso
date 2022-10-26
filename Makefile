@@ -102,7 +102,7 @@ dev:  ## Initializes repository for development
 	$(echo-stage) "Installing openconnect-sso in develop mode..."
 	(source $(VENV_BIN)/activate && poetry install $(POETRYARGS))
 	$(echo-success) "Development installation finished."
-dev: POETRYARGS ?= -E full  ## Additional arguments for poetry install
+dev: POETRYARGS ?= ## Additional arguments for poetry install
 dev: PRECOMMIT ?= yes ## Install pre-commit hooks
 
 pre-commit-install:
