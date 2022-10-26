@@ -73,7 +73,11 @@ def run(args):
 
     try:
         return run_openconnect(
-            auth_response, selected_profile, args.proxy, args.openconnect_args
+            auth_response,
+            selected_profile,
+            args.proxy,
+            args.ac_version,
+            args.openconnect_args,
         )
     except KeyboardInterrupt:
         logger.warn("CTRL-C pressed, exiting")
@@ -140,7 +144,7 @@ async def _run(args, cfg):
     display_mode = config.DisplayMode[args.browser_display_mode.upper()]
 
     auth_response = await authenticate_to(
-        selected_profile, args.proxy, credentials, display_mode
+        selected_profile, args.proxy, credentials, display_mode, args.ac_version
     )
 
     if args.on_disconnect and not cfg.on_disconnect:
@@ -168,12 +172,12 @@ async def select_profile(profile_list):
     return selection
 
 
-def authenticate_to(host, proxy, credentials, display_mode):
+def authenticate_to(host, proxy, credentials, display_mode, version):
     logger.info("Authenticating to VPN endpoint", name=host.name, address=host.address)
-    return Authenticator(host, proxy, credentials).authenticate(display_mode)
+    return Authenticator(host, proxy, credentials, version).authenticate(display_mode)
 
 
-def run_openconnect(auth_info, host, proxy, args):
+def run_openconnect(auth_info, host, proxy, version, args):
     as_root = next((prog for prog in ("doas", "sudo") if shutil.which(prog)), None)
     if not as_root:
         logger.error(
@@ -184,6 +188,10 @@ def run_openconnect(auth_info, host, proxy, args):
     command_line = [
         as_root,
         "openconnect",
+        "--useragent",
+        f"AnyConnect Linux_64 {version}",
+        "--version-string",
+        version,
         "--cookie-on-stdin",
         "--servercert",
         auth_info.server_cert_hash,
