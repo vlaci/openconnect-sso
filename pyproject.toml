@@ -35,6 +35,7 @@ setuptools = ">40.0"
 PySocks = "^1.7.1"
 PyQt6 = "^6.3.0"
 PyQt6-WebEngine = "^6.3.0"
+pyotp = "^2.7.0"
 
 [tool.poetry.dev-dependencies]
 coverage_enable_subprocess = "^1.0"
