@@ -134,10 +134,8 @@ async def _run(args, cfg):
         )
 
     cfg.default_profile = config.HostProfile(
-            selected_profile.address,
-            selected_profile.user_group,
-            selected_profile.name
-        )
+        selected_profile.address, selected_profile.user_group, selected_profile.name
+    )
 
     display_mode = config.DisplayMode[args.browser_display_mode.upper()]
 
@@ -178,7 +176,9 @@ def authenticate_to(host, proxy, credentials, display_mode):
 def run_openconnect(auth_info, host, proxy, args):
     as_root = next((prog for prog in ("doas", "sudo") if shutil.which(prog)), None)
     if not as_root:
-        logger.error("Cannot find suitable program to execute as superuser (doas/sudo), exiting")
+        logger.error(
+            "Cannot find suitable program to execute as superuser (doas/sudo), exiting"
+        )
         return 20
 
     command_line = [
