@@ -10,7 +10,8 @@ let
       qtbase = head (filter (d: getName d.name == "qtbase") dep.nativeBuildInputs);
       version = splitVersion qtbase.version;
       majorMinor = concatStrings (take 2 version);
-    in pkgs."libsForQt${majorMinor}";
+    in
+    pkgs."libsForQt${majorMinor}";
 
   inherit (qtLibsFor pkgs.python3Packages.pyqt5) callPackage;
   pythonPackages = pkgs.python3Packages;
