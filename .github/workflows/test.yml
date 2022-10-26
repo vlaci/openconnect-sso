@@ -18,9 +18,9 @@ jobs:
         os: [Ubuntu, Windows]
         python-version: [3.8]
         include:
-        - python-version: 3.6
-          os: Ubuntu
         - python-version: 3.9
+          os: Ubuntu
+        - python-version: 3.10
           os: Ubuntu
 
     steps:
