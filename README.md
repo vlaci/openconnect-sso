@@ -17,7 +17,7 @@ dependencies including Qt:
 ```shell
 $ pip install --user pipx
 Successfully installed pipx
-$ pipx install "openconnect-sso[full]"
+$ pipx install "openconnect-sso"
 ⣾ installing openconnect-sso
   installed package openconnect-sso 0.4.0, Python 3.7.5
   These apps are now globally available
@@ -35,12 +35,6 @@ instructions.
 
 You likely need to open a new terminal or re-login for the changes to take
 effect. ✨ 🌟 ✨
-```
-
-If you have Qt 5.x installed, you can skip the installation of bundled Qt version:
-
-``` bash
-pipx install openconnect-sso
 ```
 
 Of course you can also install via `pip` instead of `pipx` if you'd like to
