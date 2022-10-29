@@ -184,15 +184,22 @@ def authenticate_to(host, proxy, credentials, display_mode, version):
 
 
 def run_openconnect(auth_info, host, proxy, version, args):
-    as_root = next((prog for prog in ("doas", "sudo") if shutil.which(prog)), None)
-    if not as_root:
+    as_root = next(([prog] for prog in ("doas", "sudo") if shutil.which(prog)), [])
+    try:
+        if not as_root:
+            if os.name == "nt":
+                import ctypes
+                if not ctypes.windll.shell32.IsUserAnAdmin():
+                    raise PermissionError
+            else:
+                raise PermissionError
+    except PermissionError:
         logger.error(
             "Cannot find suitable program to execute as superuser (doas/sudo), exiting"
         )
         return 20
 
-    command_line = [
-        as_root,
+    command_line = as_root + [
         "openconnect",
         "--useragent",
         f"AnyConnect Linux_64 {version}",
