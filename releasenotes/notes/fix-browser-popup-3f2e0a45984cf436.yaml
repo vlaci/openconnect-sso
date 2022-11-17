@@ -3,4 +3,4 @@ fixes:
   - |
     Browser window was not shown
   - |
-    Pasword was logged in debug mode
+    Password was logged in debug mode
