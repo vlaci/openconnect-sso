@@ -134,6 +134,29 @@ selector = "input[type=tel]"
 fill = "totp"
 ```
 
+### Adding custom `openconnect` arguments
+
+Sometimes you need to add custom `openconnect` arguments. One situation can be if you get similar error messages:
+
+```shell
+Failed to read from SSL socket: The transmitted packet is too large (EMSGSIZE).
+Failed to recv DPD request (-5)
+```
+
+or:
+
+```shell
+Detected MTU of 1370 bytes (was 1406)
+```
+
+Generally, you can add `openconnect` arguments after the `--` separator. This is called _"positional arguments"_. The
+solution of the previous errors is setting `--base-mtu` e.g.:
+
+```shell
+openconnect-sso --server vpn.server.com/group --user user@domain.com -- --base-mtu=1370
+#                                                          separator ^^|^^^^^^^^^^^^^^^ openconnect args
+```
+
 ## Development
 
 `openconnect-sso` is developed using [Nix](https://nixos.org/nix/). Refer to the
