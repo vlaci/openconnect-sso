@@ -57,10 +57,18 @@ class Authenticator:
     def _detect_authentication_target_url(self):
         # Follow possible redirects in a GET request
         # Authentication will occcur using a POST request on the final URL
-        response = self.session.get(self.host.vpn_url, verify=False)
-        response.raise_for_status()
-        self.host.address = response.url
         logger.debug("Auth target url", url=self.host.vpn_url)
+        response = self.session.get(self.host.vpn_url, verify=False)
+        if response.ok:
+            self.host.address = response.url
+        else:
+            logger.warn(
+                "Failed to check for redirect",
+                reason=response.reason,
+                error=response.status_code,
+                response=response,
+            )
+            self.host.address = self.host.vpn_url
 
     def _start_authentication(self):
         request = _create_auth_init_request(self.host, self.host.vpn_url)
