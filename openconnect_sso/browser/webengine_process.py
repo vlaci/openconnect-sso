@@ -19,6 +19,7 @@ from openconnect_sso import config
 
 
 app = None
+profile = None
 logger = structlog.get_logger("webengine")
 
 
@@ -68,6 +69,7 @@ class Process(multiprocessing.Process):
     def run(self):
         # To work around funky GC conflicts with C++ code by ensuring QApplication terminates last
         global app
+        global profile
 
         signal.signal(signal.SIGTERM, on_sigterm)
         signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -78,6 +80,7 @@ class Process(multiprocessing.Process):
         if self.display_mode == config.DisplayMode.HIDDEN:
             argv += ["-platform", "minimal"]
         app = QApplication(argv)
+        profile = QWebEngineProfile("openconnect-sso")
 
         if self.proxy:
             parsed = urlparse(self.proxy)
@@ -99,7 +102,7 @@ class Process(multiprocessing.Process):
             pass
 
         force_python_execution.timeout.connect(ignore)
-        web = WebBrowser(cfg.auto_fill_rules, self._states.put)
+        web = WebBrowser(cfg.auto_fill_rules, self._states.put, profile)
 
         startup_info = self._commands.get()
         logger.info("Browser started", startup_info=startup_info)
@@ -121,6 +124,7 @@ class Process(multiprocessing.Process):
 
 
 def on_sigterm(signum, frame):
+    global profile
     logger.info("Terminate requested.")
     # Force flush cookieStore to disk. Without this hack the cookieStore may
     # not be synced at all if the browser lives only for a short amount of
@@ -129,7 +133,7 @@ def on_sigterm(signum, frame):
 
     # See: https://github.com/qutebrowser/qutebrowser/commit/8d55d093f29008b268569cdec28b700a8c42d761
     cookie = QNetworkCookie()
-    QWebEngineProfile.defaultProfile().cookieStore().deleteCookie(cookie)
+    profile.cookieStore().deleteCookie(cookie)
 
     # Give some time to actually save cookies
     exit_timer = QTimer(app)
@@ -138,10 +142,12 @@ def on_sigterm(signum, frame):
 
 
 class WebBrowser(QWebEngineView):
-    def __init__(self, auto_fill_rules, on_update):
+    def __init__(self, auto_fill_rules, on_update, profile):
         super().__init__()
         self._on_update = on_update
         self._auto_fill_rules = auto_fill_rules
+        page = QWebEnginePage(profile, self)
+        self.setPage(page)
         cookie_store = self.page().profile().cookieStore()
         cookie_store.cookieAdded.connect(self._on_cookie_added)
         self.page().loadFinished.connect(self._on_load_finished)
