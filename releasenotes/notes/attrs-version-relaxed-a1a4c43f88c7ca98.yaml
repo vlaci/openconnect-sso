@@ -1,6 +1,0 @@
----
-fixes:
-  - |
-    Relaxed version requirements of ``attrs`` package. As ``attrs`` is also
-    used as a transitive dependency being too restrictive of its version can
-    break dependency resolution during installation.

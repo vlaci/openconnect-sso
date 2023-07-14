@@ -1,5 +1,0 @@
----
-fixes:
-  - |
-    Add a version constraint to ``attrs`` package because version ``19.2.0``
-    removed support for the ``convert`` constructor argument.

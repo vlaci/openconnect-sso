@@ -1,2 +1,0 @@
-collapse_pre_releases: true
-pre_release_tag_re: '(?P<pre_release>(a|b|dev|rc)\d+$)'

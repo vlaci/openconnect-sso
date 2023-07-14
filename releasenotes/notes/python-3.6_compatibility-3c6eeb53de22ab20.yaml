@@ -1,6 +1,0 @@
----
-fixes:
-  - |
-    Python 3.6 compatibilty has been fixed. The problem was caused by the
-    usage of ``asyncio.create_task(coro)``. Its usage was replaced with
-    ``asyncio.ensure_future(core)``.

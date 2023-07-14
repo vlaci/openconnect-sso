@@ -1,4 +1,0 @@
----
-fixes:
-  - |
-    \#8 Show error returned by VPN endpoint when authentication starts

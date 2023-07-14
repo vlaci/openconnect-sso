@@ -1,6 +1,0 @@
----
-fixes:
-  - |
-    ``--server`` command line option only had an effect when
-    ``openconnect-sso`` is started for the first time. Subsequent executions
-    always loaded the server setting from the saved configuration.

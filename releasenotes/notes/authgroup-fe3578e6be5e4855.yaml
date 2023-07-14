@@ -1,9 +1,0 @@
----
-features:
-  - |
-    Adding ``--authgroup`` argument from OpenConnect
-
-    Some VPN endpoints require users to post a valid authgroup (in OpenConnect
-    lingua) as part of the ``group-access`` xml node. Up until now it was only
-    possilbe to override the authgroup from the configuration or from an
-    AnyConnect XML profile.

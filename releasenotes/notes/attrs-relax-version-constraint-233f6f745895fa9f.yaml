@@ -1,6 +1,0 @@
----
-other:
-  - |
-    Removed  max version constraint from ``attrs`` and update dependencies. It
-    works with a more recent version after the ``convert=`` deprecation issues
-    had been resolved for the previous upgrade.

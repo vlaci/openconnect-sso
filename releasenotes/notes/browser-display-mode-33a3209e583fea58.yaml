@@ -1,8 +1,0 @@
----
-features:
-  - |
-    ``--browser-display-mode [shown|hidden]`` command line argument
-      If ``hidden`` is specified the browser login window is not displayed.
-      Keep in mind thatin that case there is no way to manually enter
-      credentials so make sure that you can login with saved settings without
-      interacting with the webpage before selecting this option.
