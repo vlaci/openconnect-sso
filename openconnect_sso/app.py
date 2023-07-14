@@ -189,6 +189,7 @@ def run_openconnect(auth_info, host, proxy, version, args):
         if not as_root:
             if os.name == "nt":
                 import ctypes
+
                 if not ctypes.windll.shell32.IsUserAnAdmin():
                     raise PermissionError
             else:
