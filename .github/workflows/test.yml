@@ -66,6 +66,7 @@ jobs:
           python -m ensurepip
           python -m pip install --upgrade pip pre-commit poetry
           make PRECOMMIT=n dev
+          sudo apt update
           sudo apt install libegl1
 
       - name: Run pytest
