@@ -122,7 +122,7 @@ class StoreOpenConnectArgs(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         if "--" in values:
             values.remove("--")
-        setattr(namespace, self.dest, values[0:])
+        setattr(namespace, self.dest, values)
 
 
 class LogLevel(enum.IntEnum):
