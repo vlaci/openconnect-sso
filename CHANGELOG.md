@@ -3,6 +3,8 @@
 ## v0.8.1
 
 - Updating dependencies
+- Support both doas and sudo
+- Support TOPT
 
 ## v0.8.0
 
