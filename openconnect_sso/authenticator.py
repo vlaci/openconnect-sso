@@ -54,7 +54,7 @@ class Authenticator:
 
     def _detect_authentication_target_url(self):
         # Follow possible redirects in a GET request
-        # Authentication will occcur using a POST request on the final URL
+        # Authentication will occur using a POST request on the final URL
         response = requests.get(self.host.vpn_url)
         response.raise_for_status()
         self.host.address = response.url
