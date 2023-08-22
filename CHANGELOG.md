@@ -94,7 +94,7 @@
 
   Some VPN endpoints require users to post a valid authgroup (in
   OpenConnect lingua) as part of the `group-access` xml node. Up until
-  now it was only possilbe to override the authgroup from the
+  now it was only possible to override the authgroup from the
   configuration or from an AnyConnect XML profile.
 
 ### Other Notes
@@ -194,7 +194,7 @@ installation of `Qt` by declaring dependencies to `PyQt5` and
 ### Bug Fixes
 
 - Browser window was not shown
-- Pasword was logged in debug mode
+- Password was logged in debug mode
 
 ## v0.3.5
 
@@ -229,7 +229,7 @@ forces the updated set of rules to be written in the configuration.
 
   Some VPN endpoints require users to post a valid authgroup (in
   OpenConnect lingua) as part of the `group-access` xml node. Up until
-  now it was only possilbe to override the authgroup from the
+  now it was only possible to override the authgroup from the
   configuration or from an AnyConnect XML profile.
 
 ### Other Notes
