@@ -106,8 +106,8 @@ def get_default_auto_fill_rules():
 @attr.s
 class Credentials(ConfigNode):
     username = attr.ib()
-    _passwd = attr.ib(default=None)
-    _totp = attr.ib(default=None)
+    _passwd = None
+    _totp = None
 
     @property
     def password(self):
