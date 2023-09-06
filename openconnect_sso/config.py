@@ -140,7 +140,7 @@ class Credentials(ConfigNode):
                 logger.info("Cannot retrieve saved totp info from keyring.")
                 return ""
         else:
-            return self._totp
+            return int(pyotp.TOTP(self._totp).now())
 
     @totp.setter
     def totp(self, value):
