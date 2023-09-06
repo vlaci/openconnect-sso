@@ -106,33 +106,33 @@ def get_default_auto_fill_rules():
 @attr.s
 class Credentials(ConfigNode):
     username = attr.ib()
-    passwd = attr.ib(default=None)
-    totp = attr.ib(default=None)
+    _passwd = attr.ib(default=None)
+    _totp = attr.ib(default=None)
 
     @property
     def password(self):
-        if self.passwd is None:
+        if self._passwd is None:
             try:
                 return keyring.get_password(APP_NAME, self.username)
             except keyring.errors.KeyringError:
                 logger.info("Cannot retrieve saved password from keyring.")
                 return ""
         else:
-            return self.passwd
+            return self._passwd
 
     @password.setter
     def password(self, value):
-        if self.passwd is None:
+        if self._passwd is None:
             try:
                 keyring.set_password(APP_NAME, self.username, value)
             except keyring.errors.KeyringError:
                 logger.info("Cannot save password to keyring.")
         else:
-            self.passwd = value
+            self._passwd = value
 
     @property
     def totp(self):
-        if self.totp is None:
+        if self._totp is None:
             try:
                 totpsecret = keyring.get_password(APP_NAME, "totp/" + self.username)
                 return int(pyotp.TOTP(totpsecret).now()) if totpsecret else None
@@ -140,17 +140,17 @@ class Credentials(ConfigNode):
                 logger.info("Cannot retrieve saved totp info from keyring.")
                 return ""
         else:
-            return self.totp
+            return self._totp
 
     @totp.setter
     def totp(self, value):
-        if self.totp is None:
+        if self._totp is None:
             try:
                 keyring.set_password(APP_NAME, "totp/" + self.username, value)
             except keyring.errors.KeyringError:
                 logger.info("Cannot save totp secret to keyring.")
         else:
-            self.totp = value
+            self._totp = value
 
 
 @attr.s

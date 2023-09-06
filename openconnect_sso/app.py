@@ -115,7 +115,7 @@ async def _run(args, cfg):
         credentials = Credentials(args.user)
 
     if credentials and not credentials.password and args.passwd:
-        credentials.passwd = args.passwd
+        credentials._passwd = args.passwd
         cfg.credentials = credentials
     elif credentials and not credentials.password:
         credentials.password = getpass.getpass(prompt=f"Password ({args.user}): ")
