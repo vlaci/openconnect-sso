@@ -122,7 +122,7 @@ async def _run(args, cfg):
         cfg.credentials = credentials
 
     if credentials and not credentials.totp and args.totp:
-        credentials.totp = args.totp
+        credentials.totp = args._totp
         cfg.credentials = credentials
     elif credentials and not credentials.totp:
         credentials.totp = getpass.getpass(
