@@ -115,6 +115,12 @@ def create_argparser():
     credentials_group.add_argument(
         "-u", "--user", help="Authenticate as the given user", default=None
     )
+    credentials_group.add_argument(
+        "--passwd", help="Password to login with", default=None
+    )
+    credentials_group.add_argument(
+        "--totp", help="TOTP secret to use to login", default=None
+    )
     return parser
 
 
