@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "openconnect-sso"
-version = "0.8.1"
+version = "0.8.2"
 description = "Wrapper script for OpenConnect supporting Azure AD (SAMLv2) authentication to Cisco SSL-VPNs"
 license = "GPL-3.0-only"
 authors = ["László Vaskó <laszlo.vasko@outlook.com>"]

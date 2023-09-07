@@ -179,7 +179,7 @@ class WebBrowser(QWebEngineView):
 
 function autoFill() {{
     {get_selectors(rules, credentials)}
-    setTimeout(autoFill, 1000);
+    setTimeout(autoFill, 1588);
 }}
 autoFill();
 """
@@ -246,7 +246,8 @@ def get_selectors(rules, credentials):
             value = json.dumps(getattr(credentials, rule.fill, None))
             if value:
                 statements.append(
-                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {value}; elem.dispatchEvent(new Event("blur")); }}"""
+                    #f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {value}; elem.dispatchEvent(new Event("blur")); }}"""
+                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {value}; elem.dispatchEvent(new Event(\'input\', {{bubbles: true}})); /*elem.dispatchEvent(new Event("blur"));*/ }}"""
                 )
             else:
                 logger.warning(
@@ -256,6 +257,7 @@ def get_selectors(rules, credentials):
                 )
         elif rule.action == "click":
             statements.append(
-                f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.click(); }}"""
+                #f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.click(); }}"""
+                f"""var elem = document.querySelector({selector}); if (elem) {{ var click_delay=728; elem.dispatchEvent(new Event("focus")); setTimeout(function() {{ document.querySelector({selector}).click(); }}, click_delay); }}"""
             )
     return "\n".join(statements)

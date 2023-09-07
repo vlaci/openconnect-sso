@@ -114,11 +114,17 @@ async def _run(args, cfg):
     elif args.user:
         credentials = Credentials(args.user)
 
-    if credentials and not credentials.password:
+    if credentials and not credentials.password and args.passwd:
+        credentials._passwd = args.passwd
+        cfg.credentials = credentials
+    elif credentials and not credentials.password:
         credentials.password = getpass.getpass(prompt=f"Password ({args.user}): ")
         cfg.credentials = credentials
 
-    if credentials and not credentials.totp:
+    if credentials and not credentials.totp and args.totp:
+        credentials._totp = args.totp
+        cfg.credentials = credentials
+    elif credentials and not credentials.totp:
         credentials.totp = getpass.getpass(
             prompt=f"TOTP secret (leave blank if not required) ({args.user}): "
         )
