@@ -121,6 +121,14 @@ class Credentials(ConfigNode):
             keyring.set_password(APP_NAME, self.username, value)
         except keyring.errors.KeyringError:
             logger.info("Cannot save password to keyring.")
+    
+    @password.deleter
+    def password(self):
+        try:
+            return keyring.delete_password(APP_NAME, self.username)
+        except keyring.errors.KeyringError:
+            logger.info("Cannot delete saved password from keyring.")
+            return ""
 
     @property
     def totp(self):
@@ -137,6 +145,14 @@ class Credentials(ConfigNode):
             keyring.set_password(APP_NAME, "totp/" + self.username, value)
         except keyring.errors.KeyringError:
             logger.info("Cannot save totp secret to keyring.")
+
+    @totp.deleter
+    def totp(self):
+        try:
+            return keyring.delete_password(APP_NAME, "totp/" + self.username)
+        except keyring.errors.KeyringError:
+            logger.info("Cannot delete saved totp secret from keyring.")
+            return ""
 
 
 @attr.s
