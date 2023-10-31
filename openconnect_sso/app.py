@@ -108,6 +108,10 @@ def configure_logger(logger, level):
 
 
 async def _run(args, cfg):
+    if args.reset_credentials:
+        del Credentials(args.user).password
+        del Credentials(args.user).totp
+    
     credentials = None
     if cfg.credentials:
         credentials = cfg.credentials
