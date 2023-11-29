@@ -36,6 +36,8 @@ poetry2nix.mkPoetryApplication {
       # Force the app to use QT_PLUGIN_PATH values from wrapper
       --unset QT_PLUGIN_PATH
       "''${qtWrapperArgs[@]}"
+      # avoid persistant warning on starup
+      --set QT_STYLE_OVERRIDE Fusion
     )
   '';
 
