@@ -1,22 +1,12 @@
 { sources ? import ./sources.nix
-, pkgs ? import <nixpkgs> {
-    overlays = [ (import "${sources.poetry2nix}/overlay.nix") ];
-  }
+, pkgs ? import <nixpkgs> { }
+, poetry2nix ? import sources.poetry2nix { inherit pkgs; }
 }:
 
 let
-  qtLibsFor = with pkgs.lib; dep:
-    let
-      qtbase = head (filter (d: getName d.name == "qtbase") dep.nativeBuildInputs);
-      version = splitVersion qtbase.version;
-      majorMinor = concatStrings (take 2 version);
-    in
-    pkgs."libsForQt${majorMinor}";
+  inherit (pkgs) python3Packages qt6Packages;
 
-  inherit (qtLibsFor pkgs.python3Packages.pyqt5) callPackage;
-  pythonPackages = pkgs.python3Packages;
-
-  openconnect-sso = callPackage ./openconnect-sso.nix { inherit (pkgs) python3Packages; };
+  openconnect-sso = qt6Packages.callPackage ./openconnect-sso.nix { inherit poetry2nix; };
 
   shell = pkgs.mkShell {
     buildInputs = with pkgs; [
@@ -29,7 +19,7 @@ let
       nixpkgs-fmt # To format Nix source files
       poetry # Dependency manager for Python
     ] ++ (
-      with pythonPackages; [
+      with python3Packages; [
         pre-commit # To check coding style during commit
       ]
     ) ++ (
@@ -59,7 +49,11 @@ let
       "\${qtWrapperArgs[@]}"
     ];
     unpackPhase = ":";
-    nativeBuildInputs = [ pkgs.qt5.wrapQtAppsHook ];
+
+    nativeBuildInputs = [
+      qt6Packages.wrapQtAppsHook
+    ];
+
     installPhase = ''
       mkdir -p $out/bin
       cat > $out/bin/wrap-qt <<'EOF'
