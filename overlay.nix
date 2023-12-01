@@ -1,3 +1,3 @@
 final: prev: {
-  inherit (prev.callPackage ./nix { pkgs = final; }) openconnect-sso;
+  inherit (import ./nix { pkgs = prev; }) openconnect-sso;
 }
