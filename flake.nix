@@ -48,10 +48,10 @@
       devShells.default = openconnect-pkgs.shell;
     }
   ) // {
-      overlays = rec {
-        default = openconnect-sso;
+    overlays = rec {
+      default = openconnect-sso;
 
-        openconnect-sso = import ./overlay.nix;
-      };
+      openconnect-sso = import ./overlay.nix;
+    };
   });
 }
