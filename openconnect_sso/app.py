@@ -199,16 +199,16 @@ def run_openconnect(auth_info, host, proxy, version, args):
             "Cannot find suitable program to execute as superuser (doas/sudo), exiting"
         )
         return 20
-
-    command_line = as_root + [
+    command_line = [
+        as_root,
         "openconnect",
         "--useragent",
         f"AnyConnect Linux_64 {version}",
         "--version-string",
         version,
         "--cookie-on-stdin",
-        "--servercert",
-        auth_info.server_cert_hash,
+        "--script",
+        "/home/mohan/dev-vpn/vpnc-script-split-traffic",
         *args,
         host.vpn_url,
     ]
