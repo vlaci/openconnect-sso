@@ -150,7 +150,7 @@ def parse_auth_request_response(xml):
         resp = AuthRequestResponse(
             auth_id=xml.auth.get("id"),
             auth_title=getattr(xml.auth, "title", ""),
-            auth_message=xml.auth.message,
+            auth_message=getattr(xml.auth, "message", ""),
             auth_error=getattr(xml.auth, "error", ""),
             opaque=xml.opaque,
             login_url=xml.auth["sso-v2-login"],
@@ -185,7 +185,7 @@ def parse_auth_complete_response(xml):
     assert xml.auth.get("id") == "success"
     resp = AuthCompleteResponse(
         auth_id=xml.auth.get("id"),
-        auth_message=xml.auth.message,
+        auth_message=getattr(xml.auth, "message", ""),
         session_token=xml["session-token"],
         server_cert_hash=xml.config["vpn-base-config"]["server-cert-hash"],
     )
