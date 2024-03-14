@@ -21,6 +21,10 @@ class Authenticator:
         self._detect_authentication_target_url()
 
         response = self._start_authentication()
+
+        if isinstance(response, CertRequestResponse):
+            response = self._start_authentication(no_cert=True)
+
         if not isinstance(response, AuthRequestResponse):
             logger.error(
                 "Could not start authentication. Invalid response type in current state",
@@ -60,8 +64,8 @@ class Authenticator:
         self.host.address = response.url
         logger.debug("Auth target url", url=self.host.vpn_url)
 
-    def _start_authentication(self):
-        request = _create_auth_init_request(self.host, self.host.vpn_url, self.version)
+    def _start_authentication(self, no_cert=False):
+        request = _create_auth_init_request(self.host, self.host.vpn_url, self.version, no_cert)
         logger.debug("Sending auth init request", content=request)
         response = self.session.post(self.host.vpn_url, request)
         logger.debug("Auth init response received", content=response.content)
@@ -111,7 +115,7 @@ def create_http_session(proxy, version):
 E = objectify.ElementMaker(annotate=False)
 
 
-def _create_auth_init_request(host, url, version):
+def _create_auth_init_request(host, url, version, no_cert=False):
     ConfigAuth = getattr(E, "config-auth")
     Version = E.version
     DeviceId = getattr(E, "device-id")
@@ -119,6 +123,7 @@ def _create_auth_init_request(host, url, version):
     GroupAccess = getattr(E, "group-access")
     Capabilities = E.capabilities
     AuthMethod = getattr(E, "auth-method")
+    ClientCertFail = getattr(E, "client-cert-fail")
 
     root = ConfigAuth(
         {"client": "vpn", "type": "init", "aggregate-auth-version": "2"},
@@ -128,6 +133,9 @@ def _create_auth_init_request(host, url, version):
         GroupAccess(url),
         Capabilities(AuthMethod("single-sign-on-v2")),
     )
+    if no_cert:
+        root.append(ClientCertFail())
+
     return etree.tostring(
         root, pretty_print=True, xml_declaration=True, encoding="UTF-8"
     )
@@ -144,6 +152,10 @@ def parse_response(resp):
 
 
 def parse_auth_request_response(xml):
+    if hasattr(xml, 'client-cert-request'):
+        logger.info("client-cert-request received")
+        return CertRequestResponse()
+
     assert xml.auth.get("id") == "main"
 
     try:
@@ -179,6 +191,11 @@ class AuthRequestResponse:
     login_final_url = attr.ib(converter=str)
     token_cookie_name = attr.ib(converter=str)
     opaque = attr.ib()
+
+
+@attr.s
+class CertRequestResponse:
+    pass
 
 
 def parse_auth_complete_response(xml):
