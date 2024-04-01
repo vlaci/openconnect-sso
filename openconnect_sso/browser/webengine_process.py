@@ -6,17 +6,21 @@ import sys
 from urllib.parse import urlparse
 
 import attr
-import pkg_resources
-import structlog
 
-from PyQt6.QtCore import QUrl, QTimer, pyqtSlot, Qt
+try:
+    import importlib.resources as importlib_resources
+except ModuleNotFoundError:
+    # Python < 3.8
+    import importlib_resources
+
+import structlog
+from PyQt6.QtCore import Qt, QTimer, QUrl, pyqtSlot
 from PyQt6.QtNetwork import QNetworkCookie, QNetworkProxy
-from PyQt6.QtWebEngineCore import QWebEngineScript, QWebEngineProfile, QWebEnginePage
+from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineProfile, QWebEngineScript
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtWidgets import QApplication, QWidget, QSizePolicy, QVBoxLayout
+from PyQt6.QtWidgets import QApplication, QSizePolicy, QVBoxLayout, QWidget
 
 from openconnect_sso import config
-
 
 app = None
 profile = None
@@ -158,7 +162,12 @@ class WebBrowser(QWebEngineView):
             return self._popupWindow.view()
 
     def authenticate_at(self, url, credentials):
-        script_source = pkg_resources.resource_string(__name__, "user.js").decode()
+        script_source = (
+            importlib_resources.files(".".join(__name__.split(".")[:-1]))
+            .joinpath("user.js")
+            .read_bytes()
+            .decode()
+        )
         script = QWebEngineScript()
         script.setInjectionPoint(QWebEngineScript.InjectionPoint.DocumentCreation)
         script.setWorldId(QWebEngineScript.ScriptWorldId.ApplicationWorld)

@@ -23,9 +23,8 @@ openconnect-sso = "openconnect_sso.cli:main"
 python = "^3.8"
 attrs = ">=18.2"
 colorama = "^0.4"
-importlib-metadata = { version = "^3.10.0", python = "<3.8" }
-lxml = "^4.3"
-keyring = ">=21.1, <24.0.0"
+importlib-metadata = { version = "^5.1.0", python = "<3.8" }
+importlib-resources = { version = "^6.4.0", python = "<3.8" }
 prompt-toolkit = "^3.0.3"
 pyxdg = ">=0.26, <0.29"
 requests = "^2.22"
