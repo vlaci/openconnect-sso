@@ -183,9 +183,14 @@ class AuthRequestResponse:
 
 def parse_auth_complete_response(xml):
     assert xml.auth.get("id") == "success"
+    if xml.auth.banner is not None:
+        auth_message = xml.auth.banner.text
+    else:
+        auth_message = getattr(xml.auth, "message", "")
+        
     resp = AuthCompleteResponse(
         auth_id=xml.auth.get("id"),
-        auth_message=xml.auth.message,
+        auth_message=auth_message,
         session_token=xml["session-token"],
         server_cert_hash=xml.config["vpn-base-config"]["server-cert-hash"],
     )
