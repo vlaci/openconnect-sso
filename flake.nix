@@ -1,12 +1,22 @@
 {
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix/2024.5.939250";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
-  outputs = { self, flake-utils, nixpkgs }: (flake-utils.lib.eachDefaultSystem (
+  outputs = { self, flake-utils, nixpkgs, ... }@inputs: (flake-utils.lib.eachDefaultSystem (
     system:
     let
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = import nixpkgs {
+        inherit system;
+        config.packageOverrides = _: {
+          poetry2nix = inputs.poetry2nix.lib.mkPoetry2Nix { inherit pkgs; };
+        };
+      };
       openconnect-sso = (import ./nix { inherit pkgs; }).openconnect-sso;
     in
     {
