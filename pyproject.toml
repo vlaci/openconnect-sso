@@ -33,8 +33,8 @@ structlog = ">=20.1"
 toml = "^0.10"
 setuptools = ">40.0"
 PySocks = "^1.7.1"
-PyQt6 = "^6.3.0"
-PyQt6-WebEngine = "^6.3.0"
+PyQt6 = "^6.7.0"
+PyQt6-WebEngine = "^6.7.0"
 pyotp = "^2.7.0"
 
 [tool.poetry.dev-dependencies]
