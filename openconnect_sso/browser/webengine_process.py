@@ -6,7 +6,7 @@ import sys
 from urllib.parse import urlparse
 
 import attr
-import pkg_resources
+import importlib.resources
 import structlog
 
 from PyQt6.QtCore import QUrl, QTimer, pyqtSlot, Qt
@@ -158,7 +158,12 @@ class WebBrowser(QWebEngineView):
             return self._popupWindow.view()
 
     def authenticate_at(self, url, credentials):
-        script_source = pkg_resources.resource_string(__name__, "user.js").decode()
+        script_source = (
+            importlib.resources.files("openconnect_sso")
+            .joinpath("browser", "user.js")
+            .read_bytes()
+            .decode()
+        )
         script = QWebEngineScript()
         script.setInjectionPoint(QWebEngineScript.InjectionPoint.DocumentCreation)
         script.setWorldId(QWebEngineScript.ScriptWorldId.ApplicationWorld)

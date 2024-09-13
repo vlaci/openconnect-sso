@@ -109,3 +109,9 @@ venv.bak/
 
 # pre-commit
 .pre-commit-cache
+
+# direnv
+/.direnv
+
+# Nix
+result

@@ -5,7 +5,7 @@ import enum
 import logging
 import os
 import sys
-
+import multiprocessing
 import openconnect_sso
 from openconnect_sso import app, config, __version__
 
@@ -105,6 +105,23 @@ def create_argparser():
     )
 
     parser.add_argument(
+        "-k",
+        "--skip-ssl-verification",
+        dest="ssl_verify",
+        help="Skip ssl verification to the vpn server, e.g. using hostscan-bypass",
+        action="store_false",
+        default=True,
+    )
+
+    parser.add_argument(
+        "-f",
+        "--scan-file",
+        dest="scan_file",
+        help="Device Id for machine OEM manufacturer",
+        default="",
+    )
+
+    parser.add_argument(
         "openconnect_args",
         help="Arguments passed to openconnect",
         action=StoreOpenConnectArgs,
@@ -176,4 +193,5 @@ def main():
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
     sys.exit(main())

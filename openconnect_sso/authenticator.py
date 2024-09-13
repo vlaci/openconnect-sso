@@ -1,21 +1,30 @@
 import attr
-import requests
 import structlog
 from lxml import etree, objectify
-
+from pathlib import Path
 from openconnect_sso.saml_authenticator import authenticate_in_browser
-
+from openconnect_sso.ssl import requests, ssl_verification
 
 logger = structlog.get_logger()
 
 
 class Authenticator:
-    def __init__(self, host, proxy=None, credentials=None, version=None):
+    def __init__(
+        self,
+        host,
+        proxy=None,
+        credentials=None,
+        version=None,
+        verify=True,
+        scan_file="",
+    ):
         self.host = host
         self.proxy = proxy
         self.credentials = credentials
         self.version = version
-        self.session = create_http_session(proxy, version)
+        self.session = create_http_session(proxy, version, verify)
+        self._verify = verify
+        self._scan_file = scan_file
 
     async def authenticate(self, display_mode):
         self._detect_authentication_target_url()
@@ -41,6 +50,8 @@ class Authenticator:
         sso_token = await self._authenticate_in_browser(
             auth_request_response, display_mode
         )
+        if self._scan_file and Path(self._scan_file).is_file():
+            self._complete_csd(auth_request_response)
 
         response = self._complete_authentication(auth_request_response, sso_token)
         if not isinstance(response, AuthCompleteResponse):
@@ -52,18 +63,34 @@ class Authenticator:
 
         return response
 
+    def _complete_csd(self, auth_request_response):
+        request = open(self._scan_file).read()
+        logger.debug("Sending CSD request", content=request)
+        self.session.cookies.set("sdesktop", auth_request_response.host_scan_token)
+        with ssl_verification(self._verify):
+            response = self.session.post(
+                self.host.vpn_url + "+CSCOE+/sdesktop/scan.xml?reusebrowser=1", request
+            )
+        logger.debug("CSD response received", content=response.content)
+
     def _detect_authentication_target_url(self):
         # Follow possible redirects in a GET request
         # Authentication will occur using a POST request on the final URL
-        response = requests.get(self.host.vpn_url)
-        response.raise_for_status()
-        self.host.address = response.url
-        logger.debug("Auth target url", url=self.host.vpn_url)
+        try:
+            with ssl_verification(self._verify):
+                response = requests.get(self.host.vpn_url)
+            response.raise_for_status()
+            self.host.address = response.url
+            logger.debug("Auth target url", url=self.host.vpn_url)
+        except requests.exceptions.SSLError:
+            self.host.address = self.host.vpn_url
 
     def _start_authentication(self):
         request = _create_auth_init_request(self.host, self.host.vpn_url, self.version)
         logger.debug("Sending auth init request", content=request)
-        response = self.session.post(self.host.vpn_url, request)
+
+        with ssl_verification(self._verify):
+            response = self.session.post(self.host.vpn_url, request)
         logger.debug("Auth init response received", content=response.content)
         return parse_response(response)
 
@@ -77,7 +104,8 @@ class Authenticator:
             self.host, auth_request_response, sso_token, self.version
         )
         logger.debug("Sending auth finish request", content=request)
-        response = self.session.post(self.host.vpn_url, request)
+        with ssl_verification(self._verify):
+            response = self.session.post(self.host.vpn_url, request)
         logger.debug("Auth finish response received", content=response.content)
         return parse_response(response)
 
@@ -90,8 +118,9 @@ class AuthResponseError(AuthenticationError):
     pass
 
 
-def create_http_session(proxy, version):
+def create_http_session(proxy, version, verify):
     session = requests.Session()
+    session.verify = verify
     session.proxies = {"http": proxy, "https": proxy}
     session.headers.update(
         {
@@ -156,6 +185,10 @@ def parse_auth_request_response(xml):
             login_url=xml.auth["sso-v2-login"],
             login_final_url=xml.auth["sso-v2-login-final"],
             token_cookie_name=xml.auth["sso-v2-token-cookie-name"],
+            host_scan_ticket=xml["host-scan"]["host-scan-ticket"],
+            host_scan_token=xml["host-scan"]["host-scan-token"],
+            host_scan_base_url=xml["host-scan"]["host-scan-base-uri"],
+            host_scan_wait_url=xml["host-scan"]["host-scan-wait-uri"],
         )
     except AttributeError as exc:
         raise AuthResponseError(exc)
@@ -178,6 +211,10 @@ class AuthRequestResponse:
     login_url = attr.ib(converter=str)
     login_final_url = attr.ib(converter=str)
     token_cookie_name = attr.ib(converter=str)
+    host_scan_ticket = attr.ib(converter=str)
+    host_scan_token = attr.ib(converter=str)
+    host_scan_base_url = attr.ib(converter=str)
+    host_scan_wait_url = attr.ib(converter=str)
     opaque = attr.ib()
 
 
@@ -209,7 +246,7 @@ def _create_auth_finish_request(host, auth_info, sso_token, version):
     SessionId = getattr(E, "session-id")
     Auth = E.auth
     SsoToken = getattr(E, "sso-token")
-
+    HostScanToken = getattr(E, "host-scan-token")
     root = ConfigAuth(
         {"client": "vpn", "type": "auth-reply", "aggregate-auth-version": "2"},
         Version({"who": "vpn"}, version),
@@ -218,6 +255,7 @@ def _create_auth_finish_request(host, auth_info, sso_token, version):
         SessionId(),
         auth_info.opaque,
         Auth(SsoToken(sso_token)),
+        HostScanToken(auth_info.host_scan_token),
     )
     return etree.tostring(
         root, pretty_print=True, xml_declaration=True, encoding="UTF-8"
