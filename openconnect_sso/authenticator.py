@@ -1,3 +1,4 @@
+import socket
 import attr
 import requests
 import structlog
@@ -182,6 +183,7 @@ class AuthRequestResponse:
 
 
 def parse_auth_complete_response(xml):
+    assert hasattr(xml, "auth")
     assert xml.auth.get("id") == "success"
     resp = AuthCompleteResponse(
         auth_id=xml.auth.get("id"),
@@ -202,6 +204,8 @@ class AuthCompleteResponse:
 
 
 def _create_auth_finish_request(host, auth_info, sso_token, version):
+    hostname = socket.gethostname()
+
     ConfigAuth = getattr(E, "config-auth")
     Version = E.version
     DeviceId = getattr(E, "device-id")
@@ -213,7 +217,7 @@ def _create_auth_finish_request(host, auth_info, sso_token, version):
     root = ConfigAuth(
         {"client": "vpn", "type": "auth-reply", "aggregate-auth-version": "2"},
         Version({"who": "vpn"}, version),
-        DeviceId("linux-64"),
+        DeviceId({"computer-name": hostname}, "linux-64"),
         SessionToken(),
         SessionId(),
         auth_info.opaque,

@@ -92,7 +92,7 @@ def create_argparser():
     parser.add_argument(
         "--ac-version",
         help="AnyConnect Version used for authentication and for OpenConnect, defaults to %(default)s",
-        default="4.7.00136",
+        default="5.1.6.103",
     )
 
     parser.add_argument(

@@ -1,4 +1,5 @@
 import asyncio
+import importlib.resources
 import json
 import multiprocessing
 import signal
@@ -6,7 +7,6 @@ import sys
 from urllib.parse import urlparse
 
 import attr
-import pkg_resources
 import structlog
 
 from PyQt6.QtCore import QUrl, QTimer, pyqtSlot, Qt
@@ -158,7 +158,9 @@ class WebBrowser(QWebEngineView):
             return self._popupWindow.view()
 
     def authenticate_at(self, url, credentials):
-        script_source = pkg_resources.resource_string(__name__, "user.js").decode()
+        script_source = importlib.resources.read_text(
+            "openconnect_sso.browser", "user.js"
+        )
         script = QWebEngineScript()
         script.setInjectionPoint(QWebEngineScript.InjectionPoint.DocumentCreation)
         script.setWorldId(QWebEngineScript.ScriptWorldId.ApplicationWorld)
