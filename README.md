@@ -11,7 +11,7 @@ to Cisco SSL-VPNs
 ### Using pip/pipx
 
 A generic way that works on most 'standard' Linux distributions out of the box.
-The following example shows how to install `openconect-sso` along with its
+The following example shows how to install `openconnect-sso` along with its
 dependencies including Qt:
 
 ```shell
