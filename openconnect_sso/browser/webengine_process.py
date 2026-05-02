@@ -148,6 +148,10 @@ class WebBrowser(QWebEngineView):
         self._auto_fill_rules = auto_fill_rules
         page = QWebEnginePage(profile, self)
         self.setPage(page)
+        # Use a persistent browser profile, so we don't have to
+        # re-authenticate on each use.
+        self._profile = QWebEngineProfile("openconnect-sso", self)
+        self.setPage(QWebEnginePage(self._profile, self))
         cookie_store = self.page().profile().cookieStore()
         cookie_store.cookieAdded.connect(self._on_cookie_added)
         self.page().loadFinished.connect(self._on_load_finished)
@@ -191,7 +195,10 @@ autoFill();
     def _on_cookie_added(self, cookie):
         logger.debug("Cookie set", name=to_str(cookie.name()))
         self._on_update(SetCookie(to_str(cookie.name()), to_str(cookie.value())))
-
+        # Flush cookies to disk immediately        
+        cookie2 = QNetworkCookie()
+        self.page().profile().cookieStore().deleteCookie(cookie2)
+        
     def _on_load_finished(self, success):
         url = self.page().url().toString()
         logger.debug("Page loaded", url=url)
