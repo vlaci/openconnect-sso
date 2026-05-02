@@ -150,7 +150,8 @@ class LogLevel(enum.IntEnum):
 
 def main():
     parser = create_argparser()
-    args = parser.parse_args()
+    args, extra = parser.parse_known_args()
+    args.openconnect_args = (args.openconnect_args or []) + extra
 
     if (args.profile_path or args.use_profile_selector) and (
         args.server or args.usergroup
